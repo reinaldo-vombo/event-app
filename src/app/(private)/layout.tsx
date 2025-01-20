@@ -9,7 +9,9 @@ export default function PrivateLayout({ children }: TLayout) {
             <LeftSidebar />
          </div>
          <div className='col-span-8'>
-            {children}
+            <div className="container padding">
+               {children}
+            </div>
          </div>
          <div className='col-span-3 grid p-4'>
             <RightSidebar />

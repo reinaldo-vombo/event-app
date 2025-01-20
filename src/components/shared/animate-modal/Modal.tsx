@@ -5,26 +5,17 @@ import { ReactNode, useState } from "react";
 import ModalBody from "./ModalBody";
 import ModalTrigger from "./ModalTrigger";
 
-const CARDS: Card[] = [
-   {
-      id: 2,
-      title: "Some title here",
-   },
-];
 type TModalProps = {
    className?: string;
    children: ReactNode;
    trigger: ReactNode
+   id: number
 
 }
 
-type Card = {
-   id: number;
-   title: string;
-};
 
-const Modal = ({ className, children, trigger }: TModalProps) => {
-   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
+const Modal = ({ className, children, trigger, id }: TModalProps) => {
+   const [selectedCard, setSelectedCard] = useState<boolean | null>(null);
    return (
       <>
          <div className="h-full relative w-full">
@@ -33,18 +24,16 @@ const Modal = ({ className, children, trigger }: TModalProps) => {
                layout
                transition={{ duration: 0.5, ease: "easeInOut" }}
             >
-               {CARDS.map((card) => (
-                  <ModalTrigger
-                     key={card.id}
-                     card={card}
-                     trigger={trigger}
-                     className={className}
-                     onClick={() => setSelectedCard(card)}
-                  />
-               ))}
+               <ModalTrigger
+                  selectedCard={selectedCard}
+                  id={id}
+                  trigger={trigger}
+                  className={className}
+                  onClick={() => setSelectedCard(true)}
+               />
             </motion.ul>
          </div>
-         <ModalBody card={selectedCard} onClick={() => setSelectedCard(null)}>
+         <ModalBody id={id} selectedCard={selectedCard} onClick={() => setSelectedCard(null)}>
             {children}
          </ModalBody>
       </>

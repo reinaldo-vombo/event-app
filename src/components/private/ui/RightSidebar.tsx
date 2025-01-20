@@ -8,7 +8,7 @@ import { demo1 } from '@/assets/images'
 
 export function RightSidebar() {
    return (
-      <aside className="w-full space-y-4 bg-background p-4 rounded-2xl">
+      <aside className="w-96 fixed right-0 space-y-4 bg-background p-4 rounded-2xl">
          <Card className="border-0 bg-muted">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
                <CardTitle className="text-sm font-semibold text-slate-400">Who to follow</CardTitle>

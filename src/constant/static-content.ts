@@ -40,3 +40,11 @@ export const FOLLOW_SUGGESTION = [
     handle: 'TwitterDesign',
   },
 ];
+export const initialState = {
+  message: '',
+  error: false,
+  status: 0,
+  success: undefined,
+  fields: undefined,
+  issues: [],
+};

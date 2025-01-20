@@ -14,7 +14,7 @@ export function PostCard({ props }: TProps) {
       <Card className="border-0 relative flex flex-col shadow-none h-[23rem] text-white">
          <Image src={thumbnail} fill alt="Post image" className="w-full object-cover rounded-lg" />
          <div className='absolute inset-0 bg-black/10' />
-         <CardHeader className="flex-row items-start gap-4 space-y-0 pb-2 relative z-10">
+         <CardHeader className="flex-row items-start gap-4 space-y-0 pb-2 relative z-0">
             <Image src='/avatar.jpg' className="h-10 w-10 rounded-full" width={40} height={40} alt='user' />
             <div className="flex-1 space-y-1">
                <div className="flex items-center gap-2">
@@ -35,8 +35,9 @@ export function PostCard({ props }: TProps) {
          <CardFooter className="justify-between gap-4 pb-4 relative">
             <div className='w-1/4'>
                <Modal
+                  id={2}
                   trigger={
-                     <div className='rounded-full flex items-center'>
+                     <div className='rounded-full bg-neutral-800/55 flex items-center'>
                         <MessageCircle className="mr-2 h-4 w-4" />
                         {likes}
                      </div>
@@ -45,11 +46,11 @@ export function PostCard({ props }: TProps) {
                   comments
                </Modal>
             </div>
-            <Button className='w-1/4 rounded-full bg-neutral-800/55'>
+            <Button className='w-1/4 rounded-full bg-neutral-800/55 text-white hover:text-black'>
                <Heart className="mr-2 h-4 w-4" />
                {comments}
             </Button>
-            <Button className='w-1/4 rounded-full bg-neutral-800/55'>
+            <Button className='w-1/4 rounded-full bg-neutral-800/55 text-white hover:text-black'>
                <RefreshCw className="mr-2 h-4 w-4" />
                {retweets}
             </Button>

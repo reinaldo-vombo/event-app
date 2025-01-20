@@ -2,32 +2,32 @@
 
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { MicOff, Phone, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { MicOff, X } from "lucide-react";
+import { useState } from "react";
 
 const initialCallUsers = [
    {
       name: "Le Baller",
       role: "CEO",
-      image: "https://avatar.iran.liara.run/public/4",
+      image: "/avatar.jpg",
       id: 1,
    },
    {
       name: "Romanus",
       role: "Backend lead",
-      image: "https://avatar.iran.liara.run/public/21",
+      image: "/avatar.jpg",
       id: 2,
    },
    {
       name: "Frozen bird",
       role: "Project manager",
-      image: "https://avatar.iran.liara.run/public/7",
+      image: "/avatar.jpg",
       id: 3,
    },
    {
       name: "The !nvestor",
       role: "!nvestor",
-      image: "https://avatar.iran.liara.run/public/26",
+      image: "/avatar.jpg",
       id: 4,
    },
 ];
@@ -42,32 +42,8 @@ const springTransition = {
 
 const GuesViewer = () => {
    const [status, setStatus] = useState<Status>("idle");
-   const [elapsedTime, setElapsedTime] = useState<number>(0);
    const [callUsers, setCallUsers] = useState(initialCallUsers); // Manage user state
    const isOpen = status === "open";
-
-   useEffect(() => {
-      let timer: NodeJS.Timeout | undefined;
-
-      // Start timer if there are users in the call
-      if (callUsers.length > 0) {
-         timer = setInterval(() => {
-            setElapsedTime((prevTime) => prevTime + 1);
-         }, 1000);
-      }
-
-      return () => {
-         clearInterval(timer); // Cleanup timer on component unmount or user count change
-      };
-   }, [callUsers.length]); // Depend on user count to start/stop timer
-
-   const formatTime = (seconds: number) => {
-      const minutes = Math.floor(seconds / 60);
-      const secs = seconds % 60;
-      return `${minutes.toString().padStart(2, "0")}:${secs
-         .toString()
-         .padStart(2, "0")}`;
-   };
 
    const removeUser = (id: number) => {
       setCallUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
@@ -131,13 +107,6 @@ const GuesViewer = () => {
                if (e.key === "Enter") setStatus(isOpen ? "idle" : "open");
             }}
          >
-            <div className="text-muted-foreground flex items-center gap-2">
-               <motion.div className="!size-6 !min-w-6 rounded-full bg-green-500 center">
-                  <Phone size={12} fill="white" strokeWidth={0} />
-               </motion.div>
-               <motion.span> Active call . {formatTime(elapsedTime)}</motion.span>
-            </div>
-
             <AnimatePresence>
                {isOpen && (
                   <motion.div
@@ -161,7 +130,7 @@ const GuesViewer = () => {
                      layoutId="call-company"
                      className="font-bold text-black dark:text-white text-3xl"
                   >
-                     Skale call
+                     Speakers
                   </motion.h1>
                </div>
                <AnimatePresence>

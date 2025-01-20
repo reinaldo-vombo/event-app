@@ -23,23 +23,18 @@ export async function POST(req: Request) {
 
     // Use Cheerio to parse HTML and extract metadata
     const $ = cheerio.load(html);
-    const metadata = {
-      title:
-        $('meta[property="og:title"]').attr('content') ||
-        $('title').text() ||
+    const guestData = {
+      name: $("meta[property='og:title']").attr("content") ||
+        $("title").text().trim() ||
         null,
-      description:
-        $('meta[property="og:description"]').attr('content') ||
-        $('meta[name="description"]').attr('content') ||
-        null,
-      image: $('meta[property="og:image"]').attr('content') || null,
+      avatar: $("meta[property='og:image']").attr("content") || null,
     };
 
-    return NextResponse.json(metadata);
+    return NextResponse.json(guestData);
   } catch (error) {
-    console.error('Error scraping metadata:', error);
+    console.error('Error scraping site:', error);
     return NextResponse.json(
-      { error: 'Failed to scrape metadata' },
+      { error: 'Failed to scrape data' },
       { status: 500 }
     );
   }

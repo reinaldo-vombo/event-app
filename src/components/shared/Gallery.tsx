@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { demo1, demo2, demo3, demo4, demo5, demo6, demo7 } from "@/assets/images";
+import Image from "next/image";
 
 interface Element {
    id: number;
@@ -17,30 +19,30 @@ interface Column {
 
 const items: Column[] = [
    {
-      id: 1,
+      id: 4,
       elements: [
-         { id: 1, height: 300, img: "/others/photo-1.jpg" },
-         { id: 2, height: 250, img: "/others/photo-2.jpg" },
+         { id: 4, height: 300, img: demo1 },
+         { id: 5, height: 250, img: demo2 },
       ],
    },
    {
-      id: 2,
+      id: 5,
       elements: [
-         { id: 3, height: 150, img: "/others/photo-3.jpg" },
-         { id: 4, height: 100, img: "/others/photo-4.jpg" },
-         { id: 5, height: 150, img: "/others/photo-5.jpg" },
+         { id: 6, height: 150, img: demo3 },
+         { id: 7, height: 100, img: demo4 },
+         { id: 8, height: 150, img: demo5 },
       ],
    },
    {
-      id: 3,
+      id: 6,
       elements: [
-         { id: 6, height: 300, img: "/others/photo-6.jpg" },
-         { id: 7, height: 250, img: "/others/photo-7.jpg" },
+         { id: 9, height: 300, img: demo6 },
+         { id: 10, height: 250, img: demo7 },
       ],
    },
 ];
 
-const One: React.FC = () => {
+const SnapShots: React.FC = () => {
    const [activeItem, setActiveItem] = useState<Element | null>(null);
 
    const handleItemClick = (ele: Element) => {
@@ -100,13 +102,15 @@ const One: React.FC = () => {
                   >
                      <motion.div
                         layoutId={`card-${activeItem.id}`}
-                        className="w-[600px] h-[400px]  rounded-3xl  cursor-pointer overflow-hidden"
+                        className="w-[600px] h-[400px]  rounded-3xl relative  cursor-pointer overflow-hidden"
                         onClick={() => setActiveItem(null)}
                      >
-                        <img
+                        <Image
                            src={activeItem.img}
                            alt=""
-                           className="w-full object-cover h-full"
+                           width={600}
+                           height={400}
+                           className="object-cover"
                         />
                      </motion.div>
                      <motion.div
@@ -151,7 +155,7 @@ const Gallery = (props: {
          layoutId={`card-${props.item.id}`}
          onClick={props.onClick}
       >
-         <motion.img
+         {/* <motion.img
             src={props.item.img}
             alt=""
             className="w-full object-cover h-full"
@@ -159,9 +163,16 @@ const Gallery = (props: {
             transition={{
                duration: 0.3,
             }}
-         />
+         /> */}
+         <motion.div className="w-full relative object-cover h-full"
+            whileHover={{ scale: 1.05 }}
+            transition={{
+               duration: 0.3,
+            }}>
+            <Image src={props.item.img} className="object-cover" fill sizes="100%" alt={`preview-${props.item.id}`} />
+         </motion.div>
       </motion.div>
    );
 };
 
-export default One;
+export default SnapShots;

@@ -3,22 +3,20 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { ReactNode } from "react";
 
-type Card = {
-   id: number;
-   title: string;
-};
 type TProps = {
-   card: Card | null;
    onClick: () => void;
+   selectedCard: boolean | null
    children: ReactNode;
+   id: number
 }
 
 
 const BackDrop = (props: TProps) => {
+
    return (
       <>
          <AnimatePresence>
-            {!!props.card && (
+            {!!props.selectedCard && (
                <motion.div
                   className="fixed inset-0 flex items-center justify-center z-[10]"
                   initial={{ backdropFilter: "blur(0px)" }}
@@ -30,30 +28,26 @@ const BackDrop = (props: TProps) => {
          </AnimatePresence>
 
          <AnimatePresence>
-            {!!props.card && (
-               <motion.div
-                  className="fixed inset-0 z-10 flex flex-col justify-center"
-                  onClick={props.onClick}
-               >
+            {!!props.selectedCard && (
+               <motion.div className="fixed inset-0 z-10 flex flex-col justify-center">
                   <motion.div
-                     className="p-8 max-w-[500px] mx-auto h-[400px] rounded-[30px] relative overflow-hidden flex items-center justify-center flex-col bg-black/20"
-                     layoutId={`card-${props.card.id}`}
+                     className="px-8 max-w-[500px] mx-auto py-12 rounded-[30px] relative overflow-hidden flex items-center justify-center flex-col bg-neutral-900"
+                     layoutId={`card-${props.id}`}
                   >
                      <div className="max-w-xl mx-auto">
                         <motion.p
                            className="text-white font-medium text-balance"
-                           layoutId={`heading-${props.card.id}`}
+                           layoutId={`heading-${props.id}`}
                         >
-                           {props.card.title}
                         </motion.p>
                         <motion.div
                            className="text-[#969799] font-medium w-96 text-[15px] mt-8"
-                           layoutId={`description-${props.card.id}`}
+                           layoutId={`description-${props.id}`}
                         >
                            {props.children}
                         </motion.div>
                      </div>
-                     <Button className="absolute top-8 right-8">
+                     <Button className="absolute top-8 right-8" onClick={props.onClick}>
                         <Plus className="rotate-45" />
                      </Button>
                   </motion.div>
