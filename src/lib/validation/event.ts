@@ -20,16 +20,35 @@ export const eventSchema = z
       message: 'Deve carregar uma imagem',
     }),
     gallery: z.array(z.instanceof(File)).optional(),
-    url: z.string().url().optional(),
-    guests: z.array(
+    category: z.string().nonempty({
+      message: 'Deve adicionar uma categoria',
+    }),
+    tags: z.array(z.string()).nonempty({
+      message: 'Deve adicionar pelo menos uma categoria',
+    }),
+    guests: z
+      .array(
+        z.object({
+          url: z.string().url('Please enter a valid URL').optional(),
+          name: z.string(),
+          avatar: z.string(),
+        })
+      )
+      .optional(),
+    price: z.array(
       z.object({
-        url: z.string().url("Please enter a valid URL"),
-        name: z.string().optional(),
-        avatar: z.string().optional(),
+        title: z.string().min(3, {
+          message: 'Titlo deve ter no minimo 3 caracteres',
+        }),
+        price: z.string(),
       })
-    ).optional(),
-    latitude: z.number({ required_error: "Latitude is required." }),
-    longitude: z.number({ required_error: "Longitude is required." }),
+    ),
+    status: z.string().nonempty({
+      message: 'Selecione uma das opções',
+    }),
+    tickets: z.string().optional(),
+    latitude: z.number({ required_error: 'Latitude is required.' }),
+    longitude: z.number({ required_error: 'Longitude is required.' }),
     startDate: z.date({
       required_error: 'Please select a start date.',
     }),

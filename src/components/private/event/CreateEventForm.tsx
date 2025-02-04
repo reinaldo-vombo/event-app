@@ -1,10 +1,10 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { useFieldArray, useForm } from "react-hook-form"
 import * as z from "zod"
 import { format } from "date-fns"
-import { CalendarIcon } from 'lucide-react'
+import { CalendarIcon, Cat, Dog, Fish, Rabbit, Turtle, X } from 'lucide-react'
 
 import { Button } from "@/components/ui/button"
 import {
@@ -26,13 +26,24 @@ import { Calendar } from "@/components/ui/calendar"
 import { cn } from "@/lib/utils"
 import { slugify } from "@/lib/helper"
 import TextEditor from "../shared/text-editor/TextEditor"
-import FileUploader from "../shared/File-uploade/FileUploader"
 import { eventSchema } from "@/lib/validation/event"
-import LocationMap from "../shared/LocationMap"
-// import { useState } from "react"
+import { MultiSelect } from "@/components/ui/multi-select"
+import { FileUpload } from "@/components/ui/file-upload"
+import dynamic from "next/dynamic"
 // import { Card } from "@/components/ui/card"
+const LocationMap = dynamic(
+   () => import('../shared/LocationMap'),
+   { ssr: false }
+);
 
-export function CreateEventForm() {
+const frameworksList = [
+   { value: "react", label: "React", icon: Turtle },
+   { value: "angular", label: "Angular", icon: Cat },
+   { value: "vue", label: "Vue", icon: Dog },
+   { value: "svelte", label: "Svelte", icon: Rabbit },
+   { value: "ember", label: "Ember", icon: Fish },
+];
+const CreateEventForm = () => {
    const form = useForm<z.infer<typeof eventSchema>>({
       resolver: zodResolver(eventSchema),
       defaultValues: {
@@ -41,7 +52,11 @@ export function CreateEventForm() {
          slug: "",
          thumbnail: [],
          gallery: [],
-         url: "",
+         tags: ["react", "angular"],
+         category: "",
+         price: [{ price: "", title: "" }],
+         status: "Publico",
+         tickets: "",
          latitude: 0,
          longitude: 0,
          guests: [{ url: "", name: "", avatar: "" }],
@@ -49,43 +64,16 @@ export function CreateEventForm() {
          endDate: new Date(),
       },
    })
-   // const handleLocationSelect = (lat: number, lng: number) => {
-   //    form.setValue("latitude", lat);
-   //    form.setValue("longitude", lng);
-   // };
-   // const { fields, append, remove } = useFieldArray({
-   //    control: form.control,
-   //    name: "guests",
-   // });
-   // const [isLoading, setIsLoading] = useState(false);
-
-   // const handleScrape = async (index: number, url: string) => {
-   //    setIsLoading(true);
-   //    try {
-   //       const response = await fetch("/api/scrape", {
-   //          method: "POST",
-   //          headers: {
-   //             "Content-Type": "application/json",
-   //          },
-   //          body: JSON.stringify({ url }),
-   //       });
-
-   //       if (!response.ok) {
-   //          throw new Error("Failed to scrape metadata");
-   //       }
-
-   //       const data = await response.json();
-   //       console.log(data);
-   //       // Update the form fields with the fetched metadata
-   //       form.setValue(`guests.${index}.name`, data.name || "");
-   //       form.setValue(`guests.${index}.avatar`, data.avatar || "");
-   //    } catch (err) {
-   //       console.error(err);
-   //    } finally {
-   //       setIsLoading(false);
-   //    }
-   // };
-
+   const { control } = form;
+   const { fields, append, remove } = useFieldArray({
+      control,
+      name: 'price',
+   })
+   // const type = form.watch("status");
+   const handleLocationSelect = (lat: number, lng: number) => {
+      form.setValue("latitude", lat);
+      form.setValue("longitude", lng);
+   };
    function onSubmit(values: z.infer<typeof eventSchema>) {
       console.log(values)
       // Here you would typically send the form data to your backend
@@ -95,8 +83,6 @@ export function CreateEventForm() {
       console.error("Validation Errors:", errors);
    };
    console.log(form.getValues());
-
-
    return (
       <Form {...form}>
          <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-8">
@@ -116,7 +102,7 @@ export function CreateEventForm() {
                            }}
                         />
                      </FormControl>
-                     <FormDescription>This is the title of your event.</FormDescription>
+                     <FormDescription>Esté é titulo do seu evento.</FormDescription>
                      <FormMessage />
                   </FormItem>
                )}
@@ -151,11 +137,10 @@ export function CreateEventForm() {
                      <FormLabel>Description</FormLabel>
                      <FormControl>
                         <TextEditor
-                           formField={field}
-                        />
+                           formField={field} />
                      </FormControl>
                      <FormDescription>
-                        Provide a detailed description of your event.
+                        Descrição do evento.
                      </FormDescription>
                      <FormMessage />
                   </FormItem>
@@ -167,9 +152,9 @@ export function CreateEventForm() {
                name="thumbnail"
                render={({ field }) => (
                   <FormItem>
-                     <FormLabel>Thumbnail URL</FormLabel>
+                     <FormLabel>Thumbnail do evento</FormLabel>
                      <FormControl>
-                        <FileUploader formField={field} />
+                        <FileUpload formField={field} />
                      </FormControl>
                      <FormDescription>
                         Provide a URL for the event thumbnail image.
@@ -183,12 +168,12 @@ export function CreateEventForm() {
                name="gallery"
                render={({ field }) => (
                   <FormItem>
-                     <FormLabel>Gallery URLs</FormLabel>
+                     <FormLabel>Imagems da Gallery</FormLabel>
                      <FormControl>
-                        <FileUploader formField={field} maxFiles={9} />
+                        <FileUpload formField={field} multiple={true} maxFiles={5} />
                      </FormControl>
                      <FormDescription>
-                        Add URLs for additional event images.
+                        Adicione imagems do eventos.
                      </FormDescription>
                      <FormMessage />
                   </FormItem>
@@ -286,9 +271,119 @@ export function CreateEventForm() {
                   />
                </div>
                <div className="col-span-6">
-                  <div className="rounded-lg border border-slate-500 flex items-center justify-center">
-                     {/* <LocationMap onLocationSelect={handleLocationSelect} /> */}
+                  <div className="rounded-lg border border-neutral-800 flex items-center justify-center">
+                     <LocationMap onLocationSelect={handleLocationSelect} />
                   </div>
+               </div>
+            </div>
+            <div className="grid grid-cols-12 gap-4">
+               <div className="col-span-6 space-y-6">
+                  <FormField
+                     control={form.control}
+                     name="tags"
+                     render={({ field }) => (
+                        <FormItem>
+                           <FormLabel>Tags</FormLabel>
+                           <FormControl>
+                              <MultiSelect
+                                 field={field}
+                                 options={frameworksList}
+                                 defaultValue={field.value}
+                                 placeholder="Selecione tags"
+                                 variant="inverted"
+                                 animation={2}
+                                 maxCount={3}
+                              />
+                           </FormControl>
+                           <FormDescription>
+                              Adicione tags relacionados ao teu evento.
+                           </FormDescription>
+                           <FormMessage />
+                        </FormItem>
+                     )}
+                  />
+                  {fields.map((price, index) => (
+                     <div key={index} className="flex items-center gap-4">
+                        <FormField
+                           control={control}
+                           name={`price.${index}.title`}
+                           render={({ field }) => (
+                              <FormItem>
+                                 <FormLabel>Tipo de bilhete</FormLabel>
+                                 <FormControl>
+                                    <Input
+                                       placeholder="ex: Vip, Normal"
+                                       {...field}
+                                    />
+                                 </FormControl>
+                                 <FormDescription>Nome do tipo do bilhete.</FormDescription>
+                                 <FormMessage />
+                              </FormItem>
+                           )}
+                        />
+                        <FormField
+                           control={control}
+                           name={`price.${index}.price`}
+                           render={({ field }) => (
+                              <FormItem>
+                                 <FormLabel>Preço do bilhete</FormLabel>
+                                 <FormControl>
+                                    <Input
+                                       placeholder="preço"
+                                       {...field}
+                                    />
+                                 </FormControl>
+                                 <FormDescription>Preço do bilhete.</FormDescription>
+                                 <FormMessage />
+                              </FormItem>
+                           )}
+                        />
+                        <Button className="bg-red-500" onClick={() => remove(index)}><X /></Button>
+                     </div>
+                  ))}
+                  <Button
+                     type="button"
+                     className='bg-green-500 transition-colors hover:bg-green-600 w-full'
+                     onClick={() => append({ price: '', title: "" })}
+                  >
+                     Adicionar bilhete
+                  </Button>
+               </div>
+               <div className="col-span-6 space-y-4">
+                  <FormField
+                     control={form.control}
+                     name="category"
+                     render={({ field }) => (
+                        <FormItem>
+                           <FormLabel>Categoria</FormLabel>
+                           <FormControl>
+                              <Input
+                                 placeholder="Categoria"
+                                 {...field}
+                              />
+                           </FormControl>
+                           <FormDescription>Esté é categoria do seu evento.</FormDescription>
+                           <FormMessage />
+                        </FormItem>
+                     )}
+                  />
+                  <FormField
+                     control={form.control}
+                     name="status"
+                     render={({ field }) => (
+                        <FormItem>
+                           <FormLabel>Tipo de evento</FormLabel>
+                           <FormControl>
+                              <Input
+                                 placeholder="Publico, privado"
+                                 {...field}
+                              />
+                           </FormControl>
+                           <FormDescription>Defina se evento sera pago ou gratis.</FormDescription>
+                           <FormMessage />
+                        </FormItem>
+                     )}
+                  />
                </div>
             </div>
 
@@ -298,3 +393,4 @@ export function CreateEventForm() {
    )
 }
 
+export default CreateEventForm;

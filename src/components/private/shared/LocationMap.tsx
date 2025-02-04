@@ -1,9 +1,13 @@
+'use client'
 import { LatLng } from 'leaflet'
 import React, { useState } from 'react'
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents, } from 'react-leaflet'
+import "leaflet/dist/leaflet.css"
+
 type LocationMapProps = {
    onLocationSelect: (lat: number, lng: number) => void;
 };
+
 const LocationMap = ({ onLocationSelect }: LocationMapProps) => {
    const [position, setPosition] = useState<LatLng | null>(null);
    function LocationMarker() {

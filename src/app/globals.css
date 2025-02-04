@@ -73,3 +73,6 @@ body {
     @apply pt-[100px];
   }
 }
+.leaflet-container {
+  height: 100%;
+}

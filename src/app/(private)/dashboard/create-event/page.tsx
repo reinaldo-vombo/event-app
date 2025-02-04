@@ -1,4 +1,4 @@
-import { CreateEventForm } from "@/components/private/event/CreateEventForm";
+import CreateEventForm from "@/components/private/event/CreateEventForm";
 
 export default function page() {
    return (

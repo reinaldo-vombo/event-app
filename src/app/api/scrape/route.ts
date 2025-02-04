@@ -23,14 +23,22 @@ export async function POST(req: Request) {
 
     // Use Cheerio to parse HTML and extract metadata
     const $ = cheerio.load(html);
-    const guestData = {
-      name: $("meta[property='og:title']").attr("content") ||
-        $("title").text().trim() ||
-        null,
-      avatar: $("meta[property='og:image']").attr("content") || null,
+    const scrapedData = {
+      title: $('h1').first().text().trim() || null,
+      description: $('meta[name="description"]').attr('content') || null,
+      price: $('.price, .cost, .amount').first().text().trim() || null,
+      images: $('img')
+        .map((_, el) => $(el).attr('src'))
+        .get()
+        .filter(Boolean), // Collect all image sources
+      categories: $('.category, .tags, .breadcrumbs')
+        .map((_, el) => $(el).text().trim())
+        .get()
+        .filter(Boolean),
+      location: $('.location, .address, .venue').first().text().trim() || null,
     };
 
-    return NextResponse.json(guestData);
+    return NextResponse.json(scrapedData);
   } catch (error) {
     console.error('Error scraping site:', error);
     return NextResponse.json(
