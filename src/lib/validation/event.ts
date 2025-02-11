@@ -47,16 +47,20 @@ export const eventSchema = z
       message: 'Selecione uma das opções',
     }),
     tickets: z.string().optional(),
-    latitude: z.number({ required_error: 'Latitude is required.' }),
-    longitude: z.number({ required_error: 'Longitude is required.' }),
+    location: z.object({
+      latitude: z.number({ required_error: 'Latitude is required.' }),
+      longitude: z.number({ required_error: 'Longitude is required.' }),
+    }),
     startDate: z.date({
       required_error: 'Please select a start date.',
     }),
-    endDate: z.date({
-      required_error: 'Please select an end date.',
-    }),
+    endDate: z
+      .date({
+        required_error: 'Please select an end date.',
+      })
+      .optional(),
   })
-  .refine((data) => data.endDate >= data.startDate, {
+  .refine((data) => data.endDate && data.endDate >= data.startDate, {
     message: 'End date must be after start date.',
     path: ['endDate'],
   });

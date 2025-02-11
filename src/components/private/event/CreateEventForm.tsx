@@ -30,6 +30,11 @@ import { eventSchema } from "@/lib/validation/event"
 import { MultiSelect } from "@/components/ui/multi-select"
 import { FileUpload } from "@/components/ui/file-upload"
 import dynamic from "next/dynamic"
+import TimePicker from "@/components/shared/TimeInput"
+import { TimePeriodSelect } from "@/components/ui/time-period-select"
+import Selector from "@/components/shared/Selector"
+import { CATEGORYS, STATUS } from "@/constant/static-content"
+import { SubmitButton } from "@/components/shared/SubmitButton"
 // import { Card } from "@/components/ui/card"
 const LocationMap = dynamic(
    () => import('../shared/LocationMap'),
@@ -57,23 +62,36 @@ const CreateEventForm = () => {
          price: [{ price: "", title: "" }],
          status: "Publico",
          tickets: "",
-         latitude: 0,
-         longitude: 0,
+         location: {
+            latitude: 51.505,
+            longitude: -0.09,
+         },
          guests: [{ url: "", name: "", avatar: "" }],
          startDate: new Date(),
          endDate: new Date(),
       },
    })
    const { control } = form;
+   const { fields: priceFields, append: appendPrice, remove: removePrice } = useFieldArray({
+      control,
+      name: "price",
+   });
+
+   // Guest field array
+   const { fields: guestFields, append: appendGuest, remove: removeGuest } = useFieldArray({
+      control,
+      name: "guests",
+   });
+
    const { fields, append, remove } = useFieldArray({
       control,
       name: 'price',
    })
    // const type = form.watch("status");
-   const handleLocationSelect = (lat: number, lng: number) => {
-      form.setValue("latitude", lat);
-      form.setValue("longitude", lng);
-   };
+   // const handleLocationSelect = (lat: number, lng: number) => {
+   //    form.setValue("location.latitude", lat);
+   //    form.setValue("location.longitude", lng);
+   // };
    function onSubmit(values: z.infer<typeof eventSchema>) {
       console.log(values)
       // Here you would typically send the form data to your backend
@@ -131,6 +149,23 @@ const CreateEventForm = () => {
             />
             <FormField
                control={form.control}
+               name="tickets"
+               render={({ field }) => (
+                  <FormItem>
+                     <FormLabel>Número de bilhetes</FormLabel>
+                     <FormControl>
+                        <Input
+                           placeholder="Event Title"
+                           {...field}
+                        />
+                     </FormControl>
+                     <FormDescription>Número de bilhetes disponivel.</FormDescription>
+                     <FormMessage />
+                  </FormItem>
+               )}
+            />
+            <FormField
+               control={form.control}
                name="description"
                render={({ field }) => (
                   <FormItem>
@@ -179,215 +214,247 @@ const CreateEventForm = () => {
                   </FormItem>
                )}
             />
-            <div className="grid grid-cols-12 gap-2">
-               <div className="col-span-6 flex gap-3">
-                  <FormField
-                     control={form.control}
-                     name="startDate"
-                     render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                           <FormLabel>Data do inicio</FormLabel>
-                           <Popover>
-                              <PopoverTrigger asChild>
-                                 <FormControl>
-                                    <Button
-                                       variant={"outline"}
-                                       className={cn(
-                                          "w-[240px] pl-3 text-left font-normal",
-                                          !field.value && "text-muted-foreground"
-                                       )}
-                                    >
-                                       {field.value ? (
-                                          format(field.value, "PPP")
-                                       ) : (
-                                          <span>Pick a date</span>
-                                       )}
-                                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                    </Button>
-                                 </FormControl>
-                              </PopoverTrigger>
-                              <PopoverContent className="w-auto p-0" align="start">
-                                 <Calendar
-                                    mode="single"
-                                    selected={field.value}
-                                    onSelect={field.onChange}
-                                    disabled={(date) =>
-                                       date < new Date(new Date().setHours(0, 0, 0, 0))
-                                    }
-                                    initialFocus
+            <div className="grid grid-cols-12 gap-6">
+               <div className="col-span-6 flex flex-col gap-3 space-y-6">
+                  <div className="flex items-center gap-3">
+                     <FormField
+                        control={form.control}
+                        name="startDate"
+                        render={({ field }) => (
+                           <FormItem className="flex flex-col w-full">
+                              <FormLabel>Data do inicio</FormLabel>
+                              <Popover>
+                                 <PopoverTrigger asChild>
+                                    <FormControl>
+                                       <Button
+                                          variant={"outline"}
+                                          className={cn(
+                                             "w-[240px] pl-3 text-left font-normal",
+                                             !field.value && "text-muted-foreground"
+                                          )}
+                                       >
+                                          {field.value ? (
+                                             format(field.value, "PPP")
+                                          ) : (
+                                             <span>Pick a date</span>
+                                          )}
+                                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                       </Button>
+                                    </FormControl>
+                                 </PopoverTrigger>
+                                 <PopoverContent className="w-auto p-0" align="start">
+                                    <Calendar
+                                       mode="single"
+                                       selected={field.value}
+                                       onSelect={field.onChange}
+                                       disabled={(date) =>
+                                          date < new Date(new Date().setHours(0, 0, 0, 0))
+                                       }
+                                       initialFocus
+                                    />
+                                    <div className="p-3 border-t border-border flex items-center gap-4 ">
+                                       <TimePicker
+                                          setDate={field.onChange}
+                                          date={field.value}
+                                       />
+                                       <TimePeriodSelect
+                                          period="AM"
+                                          setPeriod={field.onChange}
+                                          setDate={field.onChange}
+                                          date={field.value} />
+                                    </div>
+                                 </PopoverContent>
+                              </Popover>
+                              <FormDescription>
+                                 A data do inicio do evento.
+                              </FormDescription>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                     <FormField
+                        control={form.control}
+                        name="endDate"
+                        render={({ field }) => (
+                           <FormItem className="flex flex-col w-full">
+                              <FormLabel>Data do enceramento</FormLabel>
+                              <Popover>
+                                 <PopoverTrigger asChild>
+                                    <FormControl>
+                                       <Button
+                                          variant={"outline"}
+                                          className={cn(
+                                             "w-[240px] pl-3 text-left font-normal",
+                                             !field.value && "text-muted-foreground"
+                                          )}
+                                       >
+                                          {field.value ? (
+                                             format(field.value, "PPP")
+                                          ) : (
+                                             <span>Pick a date</span>
+                                          )}
+                                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                       </Button>
+                                    </FormControl>
+                                 </PopoverTrigger>
+                                 <PopoverContent className="w-auto p-0" align="start">
+                                    <Calendar
+                                       mode="single"
+                                       selected={field.value}
+                                       onSelect={field.onChange}
+                                       disabled={(date) =>
+                                          date < new Date(new Date().setHours(0, 0, 0, 0))
+                                       }
+                                       initialFocus
+                                    />
+                                 </PopoverContent>
+                              </Popover>
+                              <FormDescription>
+                                 Data do enceramento, opcional.
+                              </FormDescription>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                  </div>
+                  <div className="flex items-center gap-3">
+                     <FormField
+                        control={form.control}
+                        name="category"
+                        render={({ field }) => (
+                           <FormItem className="w-full">
+                              <FormLabel>Categoria</FormLabel>
+                              <FormControl>
+                                 <Selector
+                                    className="w-full"
+                                    options={CATEGORYS}
+                                    placeholder="Selecione categoria"
+                                    formField={field}
                                  />
-                              </PopoverContent>
-                           </Popover>
-                           <FormDescription>
-                              A data do inicio do evento.
-                           </FormDescription>
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
-                  <FormField
-                     control={form.control}
-                     name="endDate"
-                     render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                           <FormLabel>Data do enceramento</FormLabel>
-                           <Popover>
-                              <PopoverTrigger asChild>
-                                 <FormControl>
-                                    <Button
-                                       variant={"outline"}
-                                       className={cn(
-                                          "w-[240px] pl-3 text-left font-normal",
-                                          !field.value && "text-muted-foreground"
-                                       )}
-                                    >
-                                       {field.value ? (
-                                          format(field.value, "PPP")
-                                       ) : (
-                                          <span>Pick a date</span>
-                                       )}
-                                       <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                    </Button>
-                                 </FormControl>
-                              </PopoverTrigger>
-                              <PopoverContent className="w-auto p-0" align="start">
-                                 <Calendar
-                                    mode="single"
-                                    selected={field.value}
-                                    onSelect={field.onChange}
-                                    disabled={(date) =>
-                                       date < new Date(new Date().setHours(0, 0, 0, 0))
-                                    }
-                                    initialFocus
+                              </FormControl>
+                              <FormDescription>Esté é categoria do seu evento.</FormDescription>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                     <FormField
+                        control={form.control}
+                        name="status"
+                        render={({ field }) => (
+                           <FormItem className="w-full">
+                              <FormLabel>Tipo de evento</FormLabel>
+                              <FormControl>
+                                 <Selector
+                                    options={STATUS}
+                                    className="w-full"
+                                    placeholder="Tipo de evento"
+                                    formField={field}
                                  />
-                              </PopoverContent>
-                           </Popover>
-                           <FormDescription>
-                              Data do enceramento.
-                           </FormDescription>
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
-               </div>
-               <div className="col-span-6">
-                  <div className="rounded-lg border border-neutral-800 flex items-center justify-center">
-                     <LocationMap onLocationSelect={handleLocationSelect} />
+                              </FormControl>
+                              <FormDescription>Defina se evento sera pago ou gratis.</FormDescription>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                  </div>
+                  <div className="space-y-6">
+                     <FormField
+                        control={form.control}
+                        name="tags"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Tags</FormLabel>
+                              <FormControl>
+                                 <MultiSelect
+                                    field={field}
+                                    options={frameworksList}
+                                    defaultValue={field.value}
+                                    placeholder="Selecione tags"
+                                    variant="inverted"
+                                    animation={2}
+                                    maxCount={3}
+                                 />
+                              </FormControl>
+                              <FormDescription>
+                                 Adicione tags relacionados ao teu evento.
+                              </FormDescription>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                     {priceFields.map((price, index) => (
+                        <div key={index} className="flex items-center gap-4">
+                           <FormField
+                              control={control}
+                              name={`price.${index}.title`}
+                              render={({ field }) => (
+                                 <FormItem>
+                                    <FormLabel>Tipo de bilhete</FormLabel>
+                                    <FormControl>
+                                       <Input
+                                          placeholder="ex: Vip, Normal"
+                                          {...field}
+                                       />
+                                    </FormControl>
+                                    <FormDescription>Nome do tipo do bilhete.</FormDescription>
+                                    <FormMessage />
+                                 </FormItem>
+                              )}
+                           />
+                           <FormField
+                              control={control}
+                              name={`price.${index}.price`}
+                              render={({ field }) => (
+                                 <FormItem>
+                                    <FormLabel>Preço do bilhete</FormLabel>
+                                    <FormControl>
+                                       <Input
+                                          placeholder="preço"
+                                          {...field}
+                                       />
+                                    </FormControl>
+                                    <FormDescription>Preço do bilhete.</FormDescription>
+                                    <FormMessage />
+                                 </FormItem>
+                              )}
+                           />
+                           <Button className="bg-red-500" onClick={() => removePrice(index)}><X /></Button>
+                        </div>
+                     ))}
+                     <Button
+                        type="button"
+                        className='bg-green-500 transition-colors hover:bg-green-600 w-full'
+                        onClick={() => appendPrice({ price: '', title: "" })}
+                     >
+                        Adicionar bilhete
+                     </Button>
                   </div>
                </div>
-            </div>
-            <div className="grid grid-cols-12 gap-4">
-               <div className="col-span-6 space-y-6">
-                  <FormField
-                     control={form.control}
-                     name="tags"
-                     render={({ field }) => (
-                        <FormItem>
-                           <FormLabel>Tags</FormLabel>
-                           <FormControl>
-                              <MultiSelect
-                                 field={field}
-                                 options={frameworksList}
-                                 defaultValue={field.value}
-                                 placeholder="Selecione tags"
-                                 variant="inverted"
-                                 animation={2}
-                                 maxCount={3}
-                              />
-                           </FormControl>
-                           <FormDescription>
-                              Adicione tags relacionados ao teu evento.
-                           </FormDescription>
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
-                  {fields.map((price, index) => (
-                     <div key={index} className="flex items-center gap-4">
-                        <FormField
-                           control={control}
-                           name={`price.${index}.title`}
-                           render={({ field }) => (
-                              <FormItem>
-                                 <FormLabel>Tipo de bilhete</FormLabel>
-                                 <FormControl>
-                                    <Input
-                                       placeholder="ex: Vip, Normal"
-                                       {...field}
-                                    />
-                                 </FormControl>
-                                 <FormDescription>Nome do tipo do bilhete.</FormDescription>
-                                 <FormMessage />
-                              </FormItem>
-                           )}
-                        />
-                        <FormField
-                           control={control}
-                           name={`price.${index}.price`}
-                           render={({ field }) => (
-                              <FormItem>
-                                 <FormLabel>Preço do bilhete</FormLabel>
-                                 <FormControl>
-                                    <Input
-                                       placeholder="preço"
-                                       {...field}
-                                    />
-                                 </FormControl>
-                                 <FormDescription>Preço do bilhete.</FormDescription>
-                                 <FormMessage />
-                              </FormItem>
-                           )}
-                        />
-                        <Button className="bg-red-500" onClick={() => remove(index)}><X /></Button>
-                     </div>
-                  ))}
-                  <Button
-                     type="button"
-                     className='bg-green-500 transition-colors hover:bg-green-600 w-full'
-                     onClick={() => append({ price: '', title: "" })}
-                  >
-                     Adicionar bilhete
-                  </Button>
-               </div>
-               <div className="col-span-6 space-y-4">
-                  <FormField
-                     control={form.control}
-                     name="category"
-                     render={({ field }) => (
-                        <FormItem>
-                           <FormLabel>Categoria</FormLabel>
-                           <FormControl>
-                              <Input
-                                 placeholder="Categoria"
-                                 {...field}
-                              />
-                           </FormControl>
-                           <FormDescription>Esté é categoria do seu evento.</FormDescription>
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
-                  <FormField
-                     control={form.control}
-                     name="status"
-                     render={({ field }) => (
-                        <FormItem>
-                           <FormLabel>Tipo de evento</FormLabel>
-                           <FormControl>
-                              <Input
-                                 placeholder="Publico, privado"
-                                 {...field}
-                              />
-                           </FormControl>
-                           <FormDescription>Defina se evento sera pago ou gratis.</FormDescription>
-                           <FormMessage />
-                        </FormItem>
-                     )}
-                  />
+               <div className="col-span-6">
+                  <div className="rounded-lg border h-72 w-full border-neutral-800 flex items-center justify-center">
+                     <FormField
+                        control={control}
+                        name="location"
+                        render={({ field }) => (
+                           <FormItem>
+                              <FormLabel>Preço do bilhete</FormLabel>
+                              <FormControl>
+                                 <LocationMap currentPosition={field.value} formField={field} />
+                              </FormControl>
+                              <FormDescription>Localização</FormDescription>
+                              <FormMessage />
+                           </FormItem>
+                        )}
+                     />
+                  </div>
+                  <div></div>
                </div>
             </div>
-
-            <Button type="submit" disabled={form.formState.isSubmitting}>Criar Evento</Button>
+            <SubmitButton
+               type="submit"
+               sucess={form.formState.isSubmitSuccessful || undefined}
+               error={form.formState.isDirty}
+               disabled={form.formState.isSubmitting} />
          </form>
       </Form>
    )

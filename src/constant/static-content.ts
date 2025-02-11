@@ -48,3 +48,42 @@ export const initialState = {
   fields: undefined,
   issues: [],
 };
+export const CATEGORYS = [
+  {
+    id: 1,
+    label: 'Conferência & Workshop',
+    value: 'conferencia & workshop',
+  },
+  {
+    id: 2,
+    label: 'Concerto & Show',
+    value: 'concerto & show',
+  },
+  {
+    id: 3,
+    label: 'Corporativo',
+    value: 'corporativo',
+  },
+  {
+    id: 4,
+    label: 'Festas & Festivais',
+    value: 'festas & festivais',
+  },
+  {
+    id: 5,
+    label: 'Formação',
+    value: 'formacao',
+  },
+];
+export const STATUS = [
+  {
+    id: 1,
+    label: 'Publico',
+    value: 'publicado',
+  },
+  {
+    id: 2,
+    label: 'Privado',
+    value: 'privado',
+  },
+];
