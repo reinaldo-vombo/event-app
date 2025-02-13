@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎉 Evently - Social Event Planning App
 
-## Getting Started
+Evently is a **Next.js 15-powered social media event planning application** that allows users to create, discover, and manage events. Users can interact with events, chat with attendees, and even purchase tickets.
 
-First, run the development server:
+🚀 Built with modern web technologies, Evently offers a seamless and interactive experience for both event organizers and attendees.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## ✨ Features
+
+### 🏆 **Core Functionalities**
+
+- **User Authentication & Profiles**
+
+  - OAuth (Google, Facebook, Twitter)
+  - Profile customization (name, bio, picture)
+  - Friends/Followers system
+  - Privacy & notification settings
+
+- **Event Creation & Management**
+
+  - Create public/private events
+  - Event details (title, location, date, time, description)
+  - Upload event images/videos
+  - RSVP system (going, interested, not going)
+  - Event categories & tags
+
+- **Feed & Social Interaction**
+
+  - Event discovery feed (trending, nearby, personalized)
+  - Like, comment, and share events
+  - User-generated posts (updates, stories)
+
+- **Messaging & Notifications**
+
+  - Direct messages & group chats
+  - Real-time event-based chat rooms
+  - Push notifications for RSVPs, comments, and invites
+
+- **Location & Maps**
+
+  - Map-based event discovery
+  - Live location sharing for meetups
+  - Directions & route suggestions
+
+- **Admin & Moderation**
+
+  - Event reporting & moderation system
+  - Spam prevention & user bans
+  - Event analytics for organizers
+
+- **Monetization & Payments**
+  - Paid events & ticketing (Stripe, PayPal integration)
+  - Event promotions (featured listings)
+  - Advertisement system for organizers
+
+---
+
+## 🛠 **Tech Stack**
+
+### **Frontend**
+
+- **Next.js 14 (App Router)** – Optimized for SEO & performance
+- **ShadCN/UI** – Pre-styled UI components
+- **Tailwind CSS** – Modern utility-first styling
+- **React Hook Form + Zod** – Forms & validation
+- **React Query** – Efficient API state management
+- **React Leaflet** – Interactive maps & location services
+- **Recharts** – Data visualization & analytics
+
+### **Backend**
+
+- **Next.js API Routes** – Server-side business logic
+- **Prisma + PostgreSQL** – Database management
+- **NextAuth.js** – Secure authentication
+- **Cloudinary / Supabase** – Image & video storage
+- **Socket.io / Pusher** – Real-time chat & notifications
+
+### **Hosting & Deployment**
+
+- **Vercel** – Next.js hosting
+- **Railway / Supabase** – Database hosting
+- **Firebase** – Push notifications
+
+---
+
+## 🚀 **Getting Started**
+
+### 📦 **1. Clone the Repository**
+
+```sh
+git clone https://github.com/yourusername/evently.git
+cd evently
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

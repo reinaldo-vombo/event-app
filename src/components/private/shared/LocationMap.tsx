@@ -1,8 +1,8 @@
 'use client'
-import { LatLng } from 'leaflet'
 import React, { useEffect, useState } from 'react'
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents, } from 'react-leaflet'
 import "leaflet/dist/leaflet.css"
+import { icon } from 'leaflet';
 
 type LocationMapProps = {
    onLocationSelect?: (lat: number, lng: number) => void;
@@ -12,12 +12,16 @@ type LocationMapProps = {
    }
    formField?: {
       value: {
-         latitude: number,
-         longitude: number,
+         lat: number,
+         lng: number,
+         name?: string
       }
-      onChange: (location: LatLng) => void
+      onChange: (location: any) => void
    }
 };
+const ICON = icon({
+   iconUrl: "/marker-icon.png",
+})
 
 const LocationMap = ({ formField, currentPosition }: LocationMapProps) => {
    const [position, setPosition] = useState<{ lat: number; lng: number; name?: string }>(
@@ -30,7 +34,7 @@ const LocationMap = ({ formField, currentPosition }: LocationMapProps) => {
             .then((data) => {
                const placeName = data.display_name || "Unknown Location";
                setPosition((prev) => ({ ...prev, name: placeName }));
-               // formField?.onChange({ ...position, name: placeName });
+               formField?.onChange({ ...position, name: placeName });
             })
             .catch((error) => console.error("Reverse Geocoding Error:", error));
       }
@@ -48,7 +52,7 @@ const LocationMap = ({ formField, currentPosition }: LocationMapProps) => {
       });
 
       return position === null ? null : (
-         <Marker position={position}>
+         <Marker position={position} icon={ICON}>
             <Popup>
                Selected Location: {position.lat.toFixed(4)}, {position.lng.toFixed(4)}
             </Popup>
@@ -56,19 +60,15 @@ const LocationMap = ({ formField, currentPosition }: LocationMapProps) => {
       );
    }
    return (
-      <MapContainer center={position} zoom={13} scrollWheelZoom={false} style={{ height: "300px", width: "100%", borderRadius: "10px" }}>
+      <MapContainer className='z-10' center={position} zoom={13} scrollWheelZoom={false} style={{ height: "300px", width: "100%", borderRadius: "10px" }}>
          <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
          />
          <LocationMarker />
-         <Marker position={position}>
-            <Popup>
-               A pretty CSS3 popup. <br /> Easily customizable.
-            </Popup>
-         </Marker>
+
       </MapContainer>
    )
 }
 
-export default LocationMap
+export default LocationMap;

@@ -86,7 +86,6 @@ export const FileUpload = ({ formField, maxFiles = 1, multiple = false }: TFileU
    return (
       <div className="w-full" {...getRootProps()}>
          <motion.div
-            onClick={handleClick}
             whileHover="animate"
             className="p-10 group/file block rounded-lg cursor-pointer w-full relative overflow-hidden"
          >
@@ -170,6 +169,7 @@ export const FileUpload = ({ formField, maxFiles = 1, multiple = false }: TFileU
                      })}
                   {!localFiles.length && (
                      <motion.div
+                        onClick={handleClick}
                         layoutId="file-upload"
                         variants={mainVariant}
                         transition={{

@@ -29,9 +29,8 @@ export const eventSchema = z
     guests: z
       .array(
         z.object({
-          url: z.string().url('Please enter a valid URL').optional(),
           name: z.string(),
-          avatar: z.string(),
+          avatar: z.array(z.instanceof(File)),
         })
       )
       .optional(),
@@ -48,8 +47,9 @@ export const eventSchema = z
     }),
     tickets: z.string().optional(),
     location: z.object({
-      latitude: z.number({ required_error: 'Latitude is required.' }),
-      longitude: z.number({ required_error: 'Longitude is required.' }),
+      lat: z.number({ required_error: 'Latitude is required.' }),
+      lng: z.number({ required_error: 'Longitude is required.' }),
+      name: z.string().optional(),
     }),
     startDate: z.date({
       required_error: 'Please select a start date.',

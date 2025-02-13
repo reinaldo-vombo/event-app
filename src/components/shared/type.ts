@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 export type TSelectProps = {
   options: { id: number; label: string; value: string }[];
   placeholder: string;
@@ -7,4 +9,11 @@ export type TSelectProps = {
     onChange: (value: string) => void;
     ref: any;
   };
+};
+export type TModalProps = {
+  trigger: ReactNode;
+  children: ReactNode;
+  title: string;
+  className?: string;
+  size?: 'sm' | 'md' | 'lg';
 };

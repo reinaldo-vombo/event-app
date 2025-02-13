@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useFieldArray, useForm } from "react-hook-form"
 import * as z from "zod"
 import { format } from "date-fns"
-import { CalendarIcon, Cat, Dog, Fish, Rabbit, Turtle, X } from 'lucide-react'
+import { CalendarIcon, Cat, Dog, Fish, Plus, Rabbit, Turtle, X } from 'lucide-react'
 
 import { Button } from "@/components/ui/button"
 import {
@@ -35,11 +35,10 @@ import { TimePeriodSelect } from "@/components/ui/time-period-select"
 import Selector from "@/components/shared/Selector"
 import { CATEGORYS, STATUS } from "@/constant/static-content"
 import { SubmitButton } from "@/components/shared/SubmitButton"
+import Modal from "@/components/shared/Modal"
+import { useMemo } from "react"
+
 // import { Card } from "@/components/ui/card"
-const LocationMap = dynamic(
-   () => import('../shared/LocationMap'),
-   { ssr: false }
-);
 
 const frameworksList = [
    { value: "react", label: "React", icon: Turtle },
@@ -49,6 +48,13 @@ const frameworksList = [
    { value: "ember", label: "Ember", icon: Fish },
 ];
 const CreateEventForm = () => {
+   const LocationMap = useMemo(() => dynamic(
+      () => import('../shared/LocationMap'),
+      {
+         loading: () => <div className="h-72 w-full flex items-center justify-center">O mapa está carregando</div>,
+         ssr: false
+      }
+   ), [])
    const form = useForm<z.infer<typeof eventSchema>>({
       resolver: zodResolver(eventSchema),
       defaultValues: {
@@ -63,10 +69,11 @@ const CreateEventForm = () => {
          status: "Publico",
          tickets: "",
          location: {
-            latitude: 51.505,
-            longitude: -0.09,
+            lat: -8.880950326777082,
+            lng: 13.252440889759589,
+            name: ""
          },
-         guests: [{ url: "", name: "", avatar: "" }],
+         guests: [{ name: "", avatar: [] }],
          startDate: new Date(),
          endDate: new Date(),
       },
@@ -83,10 +90,6 @@ const CreateEventForm = () => {
       name: "guests",
    });
 
-   const { fields, append, remove } = useFieldArray({
-      control,
-      name: 'price',
-   })
    // const type = form.watch("status");
    // const handleLocationSelect = (lat: number, lng: number) => {
    //    form.setValue("location.latitude", lat);
@@ -436,18 +439,73 @@ const CreateEventForm = () => {
                         control={control}
                         name="location"
                         render={({ field }) => (
-                           <FormItem>
-                              <FormLabel>Preço do bilhete</FormLabel>
+                           <FormItem className="w-full">
+                              <FormLabel>Localização do evento</FormLabel>
                               <FormControl>
                                  <LocationMap currentPosition={field.value} formField={field} />
                               </FormControl>
-                              <FormDescription>Localização</FormDescription>
+                              <FormDescription>Localização: <b>{field.value.name}</b></FormDescription>
                               <FormMessage />
                            </FormItem>
                         )}
                      />
                   </div>
-                  <div></div>
+                  <div className="mt-14">
+                     <Modal title="Adicionar convidado" trigger={<p>Adicionar convidados</p>}>
+                        {guestFields.map((guest, index) => (
+                           <div key={index} className="space-y-6">
+                              <div className="flex items-center">
+                                 <FormField
+                                    control={form.control}
+                                    name={`guests.${index}.avatar`}
+                                    render={({ field }) => (
+                                       <FormItem>
+                                          <FormLabel>Foto do convidado</FormLabel>
+                                          <FormControl>
+                                             <FileUpload formField={field} multiple={true} maxFiles={5} />
+                                          </FormControl>
+                                          <FormDescription>
+                                             Foto do convidado, opcinal.
+                                          </FormDescription>
+                                          <FormMessage />
+                                       </FormItem>
+                                    )}
+                                 />
+                              </div>
+                              <div className="flex items-center gap-4">
+                                 <FormField
+                                    control={form.control}
+                                    name={`guests.${index}.name`}
+                                    render={({ field }) => (
+                                       <FormItem className="w-full">
+                                          <FormLabel>Nome do convidado</FormLabel>
+                                          <FormControl>
+                                             <Input
+                                                placeholder="Nome do convidado"
+                                                {...field}
+                                             />
+                                          </FormControl>
+                                          <FormDescription>
+                                             Nome do convidado.
+                                          </FormDescription>
+                                          <FormMessage />
+                                       </FormItem>
+                                    )}
+                                 />
+                                 <Button className="bg-red-500" onClick={() => removeGuest(index)}><X /></Button>
+
+                              </div>
+                           </div>
+                        ))}
+                        <Button
+                           type="button"
+                           className='bg-green-500 transition-colors hover:bg-green-600 w-full mt-7'
+                           onClick={() => appendGuest({ name: '', avatar: [] })}
+                        >
+                           <Plus />
+                        </Button>
+                     </Modal>
+                  </div>
                </div>
             </div>
             <SubmitButton

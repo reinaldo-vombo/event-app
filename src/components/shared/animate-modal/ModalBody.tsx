@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { AnimatePresence, motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { ReactNode } from "react";
@@ -44,7 +45,7 @@ const BackDrop = (props: TProps) => {
                            className="text-[#969799] font-medium w-96 text-[15px] mt-8"
                            layoutId={`description-${props.id}`}
                         >
-                           {props.children}
+                           <ScrollArea className="h-[400px]">{props.children}</ScrollArea>
                         </motion.div>
                      </div>
                      <Button className="absolute top-8 right-8" onClick={props.onClick}>
