@@ -14,38 +14,111 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(cuid()) // Unique user ID
-  email     String    @unique // User email
-  name      String?
-  events    Event[]   // Relation to the Event table
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id       String   @id @default(uuid()) // Unique User ID
+  name     String? // Full name
+  email    String   @unique
+  password String? // Null if using OAuth
+  image    String? // Profile picture URL
+  bio      String? // Short user bio
+  events   Event[]
+  username String   @unique // Unique username for mentions
+  role     UserRole @default(PARTICIPANT) // User can be an organizer or participant
+  rsvps    RSVP[]
+
+  // Authentication
+  sessions Session[] // Active user sessions
+
+  // Location Tracking
+  lat Float? // Latitude
+  lng Float? // Longitude
+
+  // Social Features
+  followers Follower[] @relation("UserFollowers")
+  following Follower[] @relation("UserFollowing")
+
+  // Privacy & Notifications
+  isPrivate Boolean  @default(false) // Private profile setting
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// OAuth Accounts (Google, Facebook, etc.)
+
+// Sessions (for NextAuth.js)
+model Session {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expires      DateTime
+  sessionToken String   @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Follower System (Many-to-Many)
+model Follower {
+  id          String @id @default(uuid())
+  followerId  String
+  followingId String
+
+  follower  User @relation("UserFollowers", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("UserFollowing", fields: [followingId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([followerId, followingId]) // Prevent duplicate follows
+}
+
+// User Roles (Organizer or Participant)
+enum UserRole {
+  ORGANIZER
+  PARTICIPANT
 }
 
 model Event {
-  id          String      @id @default(cuid())
-  title       String      @db.VarChar(255)
-  description String      @db.Text
-  slug        String      @unique
-  thumbnail   String      
-  gallery     Json 
-  url         String?     @db.VarChar(255)
-  guests      Guest[]     
-  startDate   DateTime    
-  endDate     DateTime  
-  latitude    Float     
-  longitude   Float 
-  userId      String      
-  user        User        @relation(fields: [userId], references: [id])
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id          String   @id @default(uuid())
+  title       String
+  description String   @db.Text
+  slug        String   @unique
+  thumbnail   String
+  gallery     Json
+  guests      Guest[]
+  startDate   DateTime
+  endDate     DateTime
+  latitude    Float
+  longitude   Float
+  rsvps       RSVP[] // RSVP relation
+  organizerId String
+  organizer   User     @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model RSVP {
+  id      String     @id @default(uuid())
+  userId  String
+  eventId String
+  status  RSVPStatus @default(INTERESTED)
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, eventId]) // Ensure one RSVP per user per event
+}
+
+enum RSVPStatus {
+  GOING
+  INTERESTED
+  NOT_GOING
 }
 
 model Guest {
-  id      String   @id @default(cuid())
-  name    String?  
-  avatar  String?  
-  url     String   @db.VarChar(255) 
-  eventId String   
-  event   Event    @relation(fields: [eventId], references: [id])
+  id      String  @id @default(uuid())
+  name    String
+  avatar  String?
+  eventId String
+  event   Event   @relation(fields: [eventId], references: [id])
 }
