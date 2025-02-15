@@ -83,6 +83,7 @@ model Event {
   slug        String   @unique
   thumbnail   String
   gallery     Json
+  video       String?
   guests      Guest[]
   startDate   DateTime
   endDate     DateTime

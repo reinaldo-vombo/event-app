@@ -2,7 +2,7 @@ import { Settings } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Image from 'next/image'
-import FollowSuggestion from '../shared/FollowSuggestion'
+import FollowSuggestion from './FollowSuggestion'
 import { FOLLOW_SUGGESTION } from '@/constant/static-content'
 import { demo1 } from '@/assets/images'
 

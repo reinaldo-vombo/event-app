@@ -1,12 +1,15 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
+import { useMemo } from "react"
+import { cn } from "@/lib/utils"
+import { CalendarIcon, Cat, Dog, Fish, Plus, Rabbit, Turtle, X } from 'lucide-react'
+import { FileUpload } from "@/components/shared/file-uploade/FileUpload"
 import { useFieldArray, useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Button } from "@/components/ui/button"
 import * as z from "zod"
 import { format } from "date-fns"
-import { CalendarIcon, Cat, Dog, Fish, Plus, Rabbit, Turtle, X } from 'lucide-react'
 
-import { Button } from "@/components/ui/button"
 import {
    Form,
    FormControl,
@@ -21,22 +24,20 @@ import {
    PopoverContent,
    PopoverTrigger,
 } from "@/components/ui/popover"
-import { Input } from "@/components/ui/input"
-import { Calendar } from "@/components/ui/calendar"
-import { cn } from "@/lib/utils"
-import { slugify } from "@/lib/helper"
-import TextEditor from "../shared/text-editor/TextEditor"
-import { eventSchema } from "@/lib/validation/event"
-import { MultiSelect } from "@/components/ui/multi-select"
-import { FileUpload } from "@/components/ui/file-upload"
-import dynamic from "next/dynamic"
-import TimePicker from "@/components/shared/TimeInput"
 import { TimePeriodSelect } from "@/components/ui/time-period-select"
-import Selector from "@/components/shared/Selector"
-import { CATEGORYS, STATUS } from "@/constant/static-content"
 import { SubmitButton } from "@/components/shared/SubmitButton"
+import { CATEGORYS, STATUS } from "@/constant/static-content"
+import TextEditor from "../../shared/text-editor/TextEditor"
+import { MultiSelect } from "@/components/ui/multi-select"
+import TimePicker from "@/components/shared/TimeInput"
+import { eventSchema } from "@/lib/validation/event"
+import { Calendar } from "@/components/ui/calendar"
+import Selector from "@/components/shared/Selector"
 import Modal from "@/components/shared/Modal"
-import { useMemo } from "react"
+import { Input } from "@/components/ui/input"
+import { slugify } from "@/lib/helper"
+import dynamic from "next/dynamic"
+import AddGuestButton from "./AddGuestButton"
 
 // import { Card } from "@/components/ui/card"
 
@@ -49,7 +50,7 @@ const frameworksList = [
 ];
 const CreateEventForm = () => {
    const LocationMap = useMemo(() => dynamic(
-      () => import('../shared/LocationMap'),
+      () => import('../../shared/map/LocationMap'),
       {
          loading: () => <div className="h-72 w-full flex items-center justify-center">O mapa está carregando</div>,
          ssr: false
@@ -91,10 +92,7 @@ const CreateEventForm = () => {
    });
 
    // const type = form.watch("status");
-   // const handleLocationSelect = (lat: number, lng: number) => {
-   //    form.setValue("location.latitude", lat);
-   //    form.setValue("location.longitude", lng);
-   // };
+
    function onSubmit(values: z.infer<typeof eventSchema>) {
       console.log(values)
       // Here you would typically send the form data to your backend
@@ -103,19 +101,18 @@ const CreateEventForm = () => {
       //This helpe me fix a two week form not submiting god kwon's way bug
       console.error("Validation Errors:", errors);
    };
-   console.log(form.getValues());
    return (
       <Form {...form}>
-         <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-8">
+         <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-8 mx-auto">
             <FormField
                control={form.control}
                name="title"
                render={({ field }) => (
                   <FormItem>
-                     <FormLabel>Title</FormLabel>
+                     <FormLabel>Titulo</FormLabel>
                      <FormControl>
                         <Input
-                           placeholder="Event Title"
+                           placeholder="Titulo do Evento"
                            {...field}
                            onChange={(e) => {
                               field.onChange(e); // Update the title field
@@ -123,7 +120,7 @@ const CreateEventForm = () => {
                            }}
                         />
                      </FormControl>
-                     <FormDescription>Esté é titulo do seu evento.</FormDescription>
+                     <FormDescription className="capitalize">Esté é titulo do seu evento.</FormDescription>
                      <FormMessage />
                   </FormItem>
                )}
@@ -143,8 +140,8 @@ const CreateEventForm = () => {
                            disabled
                         />
                      </FormControl>
-                     <FormDescription>
-                        This is the URL-friendly version of your title.
+                     <FormDescription className="capitalize">
+                        Esté é versão url-amigavel do seu titulo
                      </FormDescription>
                      <FormMessage />
                   </FormItem>
@@ -158,11 +155,11 @@ const CreateEventForm = () => {
                      <FormLabel>Número de bilhetes</FormLabel>
                      <FormControl>
                         <Input
-                           placeholder="Event Title"
+                           placeholder="Número de bilhetes"
                            {...field}
                         />
                      </FormControl>
-                     <FormDescription>Número de bilhetes disponivel.</FormDescription>
+                     <FormDescription className="capitalize">Número de bilhetes disponivel.</FormDescription>
                      <FormMessage />
                   </FormItem>
                )}
@@ -172,13 +169,13 @@ const CreateEventForm = () => {
                name="description"
                render={({ field }) => (
                   <FormItem>
-                     <FormLabel>Description</FormLabel>
+                     <FormLabel>Descrição</FormLabel>
                      <FormControl>
                         <TextEditor
                            formField={field} />
                      </FormControl>
-                     <FormDescription>
-                        Descrição do evento.
+                     <FormDescription className="capitalize">
+                        Descrição detalhada do seu evento.
                      </FormDescription>
                      <FormMessage />
                   </FormItem>
@@ -194,8 +191,8 @@ const CreateEventForm = () => {
                      <FormControl>
                         <FileUpload formField={field} />
                      </FormControl>
-                     <FormDescription>
-                        Provide a URL for the event thumbnail image.
+                     <FormDescription className="capitalize">
+                        Adicione a imagem do seu evento.
                      </FormDescription>
                      <FormMessage />
                   </FormItem>
@@ -206,11 +203,11 @@ const CreateEventForm = () => {
                name="gallery"
                render={({ field }) => (
                   <FormItem>
-                     <FormLabel>Imagems da Gallery</FormLabel>
+                     <FormLabel>Galeria</FormLabel>
                      <FormControl>
                         <FileUpload formField={field} multiple={true} maxFiles={5} />
                      </FormControl>
-                     <FormDescription>
+                     <FormDescription className="capitalize">
                         Adicione imagems do eventos.
                      </FormDescription>
                      <FormMessage />
@@ -268,7 +265,7 @@ const CreateEventForm = () => {
                                     </div>
                                  </PopoverContent>
                               </Popover>
-                              <FormDescription>
+                              <FormDescription className="capitalize">
                                  A data do inicio do evento.
                               </FormDescription>
                               <FormMessage />
@@ -312,8 +309,8 @@ const CreateEventForm = () => {
                                     />
                                  </PopoverContent>
                               </Popover>
-                              <FormDescription>
-                                 Data do enceramento, opcional.
+                              <FormDescription className="capitalize">
+                                 Data do enceramento, <b>opcional</b> .
                               </FormDescription>
                               <FormMessage />
                            </FormItem>
@@ -331,11 +328,13 @@ const CreateEventForm = () => {
                                  <Selector
                                     className="w-full"
                                     options={CATEGORYS}
-                                    placeholder="Selecione categoria"
+                                    placeholder="Selecione uma categoria"
                                     formField={field}
                                  />
                               </FormControl>
-                              <FormDescription>Esté é categoria do seu evento.</FormDescription>
+                              <FormDescription className="capitalize">
+                                 Esté é categoria do seu evento.
+                              </FormDescription>
                               <FormMessage />
                            </FormItem>
                         )}
@@ -354,7 +353,7 @@ const CreateEventForm = () => {
                                     formField={field}
                                  />
                               </FormControl>
-                              <FormDescription>Defina se evento sera pago ou gratis.</FormDescription>
+                              <FormDescription className="capitalize">Defina se evento sera pago ou gratis.</FormDescription>
                               <FormMessage />
                            </FormItem>
                         )}
@@ -378,7 +377,7 @@ const CreateEventForm = () => {
                                     maxCount={3}
                                  />
                               </FormControl>
-                              <FormDescription>
+                              <FormDescription className="capitalize">
                                  Adicione tags relacionados ao teu evento.
                               </FormDescription>
                               <FormMessage />
@@ -399,7 +398,7 @@ const CreateEventForm = () => {
                                           {...field}
                                        />
                                     </FormControl>
-                                    <FormDescription>Nome do tipo do bilhete.</FormDescription>
+                                    <FormDescription className="capitalize">Nome do tipo do bilhete.</FormDescription>
                                     <FormMessage />
                                  </FormItem>
                               )}
@@ -416,7 +415,7 @@ const CreateEventForm = () => {
                                           {...field}
                                        />
                                     </FormControl>
-                                    <FormDescription>Preço do bilhete.</FormDescription>
+                                    <FormDescription className="capitalize">Preço do bilhete.</FormDescription>
                                     <FormMessage />
                                  </FormItem>
                               )}
@@ -444,14 +443,16 @@ const CreateEventForm = () => {
                               <FormControl>
                                  <LocationMap currentPosition={field.value} formField={field} />
                               </FormControl>
-                              <FormDescription>Localização: <b>{field.value.name}</b></FormDescription>
+                              <FormDescription>
+                                 Localização: <b className="text-green-500">{field.value.name}</b>
+                              </FormDescription>
                               <FormMessage />
                            </FormItem>
                         )}
                      />
                   </div>
-                  <div className="mt-14">
-                     <Modal title="Adicionar convidado" trigger={<p>Adicionar convidados</p>}>
+                  <div className="mt-14 flex flex-col">
+                     <Modal title="" trigger={<AddGuestButton />} className="mx-auto">
                         {guestFields.map((guest, index) => (
                            <div key={index} className="space-y-6">
                               <div className="flex items-center">
@@ -465,7 +466,7 @@ const CreateEventForm = () => {
                                              <FileUpload formField={field} multiple={true} maxFiles={5} />
                                           </FormControl>
                                           <FormDescription>
-                                             Foto do convidado, opcinal.
+                                             Foto do convidado.
                                           </FormDescription>
                                           <FormMessage />
                                        </FormItem>

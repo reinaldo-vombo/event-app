@@ -22,7 +22,7 @@ const ModalTrigger = (props: TProps) => {
          onClick={props.onClick}
       >
          <div className="flex justify-center items-center">
-            <motion.button className='' layoutId={`heading-${props.id}`}>
+            <motion.button className={props.className} layoutId={`heading-${props.id}`}>
                {props.trigger}
             </motion.button>
          </div>

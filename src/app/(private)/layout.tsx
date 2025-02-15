@@ -1,20 +1,14 @@
 import { LeftSidebar } from '@/components/private/ui/LeftSidebar'
-import { RightSidebar } from '@/components/private/ui/RightSidebar'
 import { TLayout } from '@/lib/types'
 
 export default function PrivateLayout({ children }: TLayout) {
    return (
-      <div className='grid grid-cols-12 min-h-screen'>
-         <div className='col-span-1'>
+      <div className='flex gap-3'>
+         <aside className='w-20'>
             <LeftSidebar />
-         </div>
-         <div className='col-span-8'>
-            <div className="container padding">
-               {children}
-            </div>
-         </div>
-         <div className='col-span-3 grid p-4'>
-            <RightSidebar />
+         </aside>
+         <div className="container min-h-screen">
+            {children}
          </div>
       </div>
    )
