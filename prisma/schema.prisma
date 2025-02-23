@@ -15,9 +15,9 @@ datasource db {
 
 model User {
   id       String   @id @default(uuid()) // Unique User ID
-  name     String? // Full name
+  name     String // Full name
   email    String   @unique
-  password String? // Null if using OAuth
+  password String // Null if using OAuth
   image    String? // Profile picture URL
   bio      String? // Short user bio
   events   Event[]
@@ -26,7 +26,7 @@ model User {
   rsvps    RSVP[]
 
   // Authentication
-  sessions Session[] // Active user sessions
+  //sessions Session[] // Active user sessions
 
   // Location Tracking
   lat Float? // Latitude
@@ -38,20 +38,6 @@ model User {
 
   // Privacy & Notifications
   isPrivate Boolean  @default(false) // Private profile setting
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-// OAuth Accounts (Google, Facebook, etc.)
-
-// Sessions (for NextAuth.js)
-model Session {
-  id           String   @id @default(uuid())
-  userId       String
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  expires      DateTime
-  sessionToken String   @unique
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -77,23 +63,29 @@ enum UserRole {
 }
 
 model Event {
-  id          String   @id @default(uuid())
-  title       String
-  description String   @db.Text
-  slug        String   @unique
-  thumbnail   String
-  gallery     Json
-  video       String?
-  guests      Guest[]
-  startDate   DateTime
-  endDate     DateTime
-  latitude    Float
-  longitude   Float
-  rsvps       RSVP[] // RSVP relation
-  organizerId String
-  organizer   User     @relation(fields: [organizerId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           String    @id @default(uuid())
+  title        String
+  description  String    @db.Text
+  slug         String    @unique
+  thumbnail    String
+  category     String
+  tags         Json?
+  price        Json?
+  status       String
+  tickets      String
+  gallery      Json?
+  video        String?
+  guests       Guest[]
+  startDate    DateTime
+  endDate      DateTime?
+  latitude     Float
+  longitude    Float
+  locationName String
+  rsvps        RSVP[] // RSVP relation
+  organizerId  String
+  organizer    User      @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }
 
 model RSVP {
@@ -119,7 +111,7 @@ enum RSVPStatus {
 model Guest {
   id      String  @id @default(uuid())
   name    String
-  avatar  String?
-  eventId String
-  event   Event   @relation(fields: [eventId], references: [id])
+  avatar  String
+  eventId String?
+  event   Event?  @relation(fields: [eventId], references: [id])
 }

@@ -6,13 +6,28 @@ export type TEvent = {
   description: string;
   tags?: string[];
   thumbnail: string;
+  category: string;
   video?: string;
   gallery?: string[];
   likes?: number;
   comments?: number;
+  status: string;
+  tickets: string;
+  price: {
+    title: string;
+    price: string;
+  }[];
+  location: {
+    lat: number;
+    lng: number;
+    name: string;
+  };
+  guests?: {
+    name: string;
+    avatar: string;
+  }[];
   shared?: number;
   retweets?: number;
-  participantes?: string[];
   date?: Date;
 };
 

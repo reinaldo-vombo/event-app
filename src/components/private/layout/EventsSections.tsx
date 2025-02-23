@@ -11,7 +11,8 @@ const data = {
    comments: 5,
    retweets: 20,
    likes: 10,
-   shared: 5
+   shared: 5,
+   category: 'hela'
 
 }
 const EventsSections = () => {

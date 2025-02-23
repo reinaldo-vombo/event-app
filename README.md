@@ -1,5 +1,7 @@
 # 🎉 Evently - Social Event Planning App
 
+[![Demo Image](/public/demo.png)]
+
 Evently is a **Next.js 15-powered social media event planning application** that allows users to create, discover, and manage events. Users can interact with events, chat with attendees, and even purchase tickets.
 
 🚀 Built with modern web technologies, Evently offers a seamless and interactive experience for both event organizers and attendees.

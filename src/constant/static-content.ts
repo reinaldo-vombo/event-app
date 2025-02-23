@@ -9,6 +9,8 @@ import {
   demo8,
 } from '@/assets/images';
 
+export const PATH = '/api/uploads/';
+
 export const IMAGE_GALLERY = [
   { id: 1, image: demo1 },
   { id: 2, image: demo2 },

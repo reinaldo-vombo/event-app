@@ -2,7 +2,7 @@
 
 import { useMemo } from "react"
 import { cn } from "@/lib/utils"
-import { CalendarIcon, Cat, Dog, Fish, Plus, Rabbit, Turtle, X } from 'lucide-react'
+import { CalendarIcon, Cat, Dog, Fish, Loader, Plus, Rabbit, Turtle, X } from 'lucide-react'
 import { FileUpload } from "@/components/shared/file-uploade/FileUpload"
 import { useFieldArray, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -25,8 +25,7 @@ import {
    PopoverTrigger,
 } from "@/components/ui/popover"
 import { TimePeriodSelect } from "@/components/ui/time-period-select"
-import { SubmitButton } from "@/components/shared/SubmitButton"
-import { CATEGORYS, STATUS } from "@/constant/static-content"
+import { CATEGORYS, initialState, STATUS } from "@/constant/static-content"
 import TextEditor from "../../shared/text-editor/TextEditor"
 import { MultiSelect } from "@/components/ui/multi-select"
 import TimePicker from "@/components/shared/TimeInput"
@@ -37,9 +36,12 @@ import Modal from "@/components/shared/Modal"
 import { Input } from "@/components/ui/input"
 import { slugify } from "@/lib/helper"
 import dynamic from "next/dynamic"
-import AddGuestButton from "./AddGuestButton"
+import AddGuestButton from "../event/AddGuestButton"
+import { createEvent } from "@/lib/actions/events"
+import NoGuest from "../event/NoGuest"
+import { toast } from "sonner"
+// import GuestPreview from "./GuestPreview"
 
-// import { Card } from "@/components/ui/card"
 
 const frameworksList = [
    { value: "react", label: "React", icon: Turtle },
@@ -79,6 +81,8 @@ const CreateEventForm = () => {
          endDate: new Date(),
       },
    })
+   // const guestImagePreview = form.getValues('guests')
+
    const { control } = form;
    const { fields: priceFields, append: appendPrice, remove: removePrice } = useFieldArray({
       control,
@@ -93,7 +97,15 @@ const CreateEventForm = () => {
 
    // const type = form.watch("status");
 
-   function onSubmit(values: z.infer<typeof eventSchema>) {
+   async function onSubmit(values: z.infer<typeof eventSchema>) {
+      const results = await createEvent(initialState, values)
+      if (results?.error) {
+         toast.error(results.message)
+         console.log(results.message);
+      }
+      if (results?.success) {
+         toast.success(results.message)
+      }
       console.log(values)
       // Here you would typically send the form data to your backend
    }
@@ -103,7 +115,7 @@ const CreateEventForm = () => {
    };
    return (
       <Form {...form}>
-         <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-8 mx-auto">
+         <form onSubmit={form.handleSubmit(onSubmit, onInvalid)} className="space-y-8 max-w-screen-lg mx-auto">
             <FormField
                control={form.control}
                name="title"
@@ -452,8 +464,8 @@ const CreateEventForm = () => {
                      />
                   </div>
                   <div className="mt-14 flex flex-col">
-                     <Modal title="" trigger={<AddGuestButton />} className="mx-auto">
-                        {guestFields.map((guest, index) => (
+                     <Modal size="lg" title="" trigger={<AddGuestButton />} className="mx-auto">
+                        {guestFields.length > 0 ? guestFields.map((guest, index) => (
                            <div key={index} className="space-y-6">
                               <div className="flex items-center">
                                  <FormField
@@ -497,7 +509,7 @@ const CreateEventForm = () => {
 
                               </div>
                            </div>
-                        ))}
+                        )) : (<NoGuest />)}
                         <Button
                            type="button"
                            className='bg-green-500 transition-colors hover:bg-green-600 w-full mt-7'
@@ -506,14 +518,16 @@ const CreateEventForm = () => {
                            <Plus />
                         </Button>
                      </Modal>
+                     {/* {guestImagePreview && <GuestPreview guests={guestImagePreview} />} */}
                   </div>
                </div>
             </div>
-            <SubmitButton
-               type="submit"
-               sucess={form.formState.isSubmitSuccessful || undefined}
-               error={form.formState.isDirty}
-               disabled={form.formState.isSubmitting} />
+            <Button className="w-36 disabled:bg-slate-200" type="submit" disabled={form.formState.isSubmitting}>
+               {form.formState.isSubmitting ?
+                  (<p className="flex items-center gap-2">Publicando... <Loader className="animate-spin" /></p>) :
+                  'Publicar'
+               }
+            </Button>
          </form>
       </Form>
    )

@@ -18,7 +18,7 @@ const user = {
 
 export default function ProfilePage() {
    return (
-      <div className="container mx-auto p-4">
+      <div className="container p-4">
          <Card className="mb-8">
             <CardContent className="pt-6">
                <div className="flex flex-col md:flex-row items-center gap-6">

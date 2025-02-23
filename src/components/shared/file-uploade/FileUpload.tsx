@@ -28,7 +28,7 @@ const secondaryVariant = {
 };
 type TFileUploadProps = {
    formField: {
-      value: File[] | undefined;
+      value: File[] | undefined | string | string[];
       onChange: (files: File[]) => void;
    };
    maxFiles?: number;
@@ -37,18 +37,39 @@ type TFileUploadProps = {
 
 export const FileUpload = ({ formField, maxFiles = 1, multiple = false }: TFileUploadProps) => {
    const fileInputRef = useRef<HTMLInputElement>(null);
-   const [localFiles, setLocalFiles] = useState<File[]>(formField.value || []);
+   const [localFiles, setLocalFiles] = useState<File[]>([]);
+   const [existingUrls, setExistingUrls] = useState<string[]>([]);
 
 
    // Sync form field value with local state when field.value changes
    useEffect(() => {
-      setLocalFiles(formField.value || []);
+      if (typeof formField.value === "string") {
+         setExistingUrls([formField.value]);
+         setLocalFiles([]);
+      } else if (Array.isArray(formField.value)) {
+         if (formField.value[0] instanceof File) {
+            setLocalFiles(formField.value as File[]);
+            setExistingUrls([]);
+         } else {
+            setExistingUrls(formField.value as string[]);
+            setLocalFiles([]);
+         }
+      }
    }, [formField.value]);
 
    const handleFileChange = (newFiles: File[]) => {
       const updatedFiles = [...localFiles, ...newFiles];
       setLocalFiles(updatedFiles); // Update local state for immediate UI feedback
       formField.onChange(updatedFiles); // Update form state
+   };
+   const handleRemoveExistingUrl = (index: number) => {
+      const updatedUrls = [...existingUrls];
+      updatedUrls.splice(index, 1);
+      setExistingUrls(updatedUrls);
+   };
+   const handleRemoveFile = (fileName: string) => {
+      setLocalFiles((prev) => prev.filter((file) => file.name !== fileName));
+      formField.onChange(localFiles.filter((file) => file.name !== fileName));
    };
 
    const handleClick = () => {
@@ -89,7 +110,7 @@ export const FileUpload = ({ formField, maxFiles = 1, multiple = false }: TFileU
       <div className="w-full" {...getRootProps()}>
          <motion.div
             whileHover="animate"
-            className="p-10 group/file block rounded-lg cursor-pointer w-full relative overflow-hidden"
+            className="py-6 group/file block rounded-lg cursor-pointer w-full relative overflow-hidden"
          >
             <input
                ref={fileInputRef}
@@ -122,7 +143,7 @@ export const FileUpload = ({ formField, maxFiles = 1, multiple = false }: TFileU
                                  "shadow-sm"
                               )}
                            >
-                              <button className="absolute top-0 left-0 size-6 flex items-center justify-center rounded-full z-10 bg-red-500" onClick={() => setLocalFiles((prev) => prev.filter(currentFile => currentFile.name !== file.name))}>
+                              <button className="absolute top-0 left-0 size-6 flex items-center justify-center rounded-full z-10 bg-red-500" onClick={() => handleRemoveFile(file.name)}>
                                  <X className="size-4" />
                               </button>
                               <div className="flex justify-between w-full items-center gap-4">

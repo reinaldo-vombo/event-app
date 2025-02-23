@@ -2,8 +2,11 @@ import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from '../db/client';
 import { compare } from 'bcrypt';
-import { Users } from '@prisma/client';
+import GoogleProvider from "next-auth/providers/google";
+
+import { User } from '@prisma/client';
 import { getServerSession } from 'next-auth';
+import { randomBytes } from 'crypto';
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -11,6 +14,10 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    }),
     CredentialsProvider({
       name: 'Sign in',
       credentials: {
@@ -30,29 +37,20 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const user = await prisma.users.findUnique({
+        const user = await prisma.user.findUnique({
           where: {
             email: credentials.email,
           },
         });
 
-        const customer = user
-          ? null
-          : await prisma.customers.findUnique({
-              where: {
-                email: credentials.email,
-              },
-            });
 
-        const authenticatedUser = user || customer;
-
-        if (!authenticatedUser) {
+        if (!user) {
           return null;
         }
 
         const isPasswordValid = await compare(
           credentials.password,
-          authenticatedUser.password
+          user.password
         );
 
         if (!isPasswordValid) {
@@ -60,20 +58,41 @@ export const authOptions: NextAuthOptions = {
         }
 
         return {
-          id: authenticatedUser.id + '',
-          email: authenticatedUser.email,
-          name: authenticatedUser.name,
-          roleId: authenticatedUser.roleId,
-          avatar: authenticatedUser.avatar,
+          id: user.id + '',
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          avatar: user.image,
+          bio: user.bio,
+          lat: user.lat,
+          lng: user.lng
         };
       },
     }),
   ],
   callbacks: {
+    async signIn({ account, profile }) {
+      if(!profile?.email) {
+        throw new Error('Email is required')
+      }
+      await prisma.user.upsert({
+        where: {
+          email: profile.email,
+        },
+        create: {
+          email: profile.email,
+          name: profile.name ?? '',
+          username: profile.email.split("@")[0], // Auto-generate username
+          password: randomBytes(32).toString("hex"),
+        },
+        update: {
+          name: profile.name,
+        },
+      })
+      return true
+    },
+  
     jwt: ({ token, user, session, trigger }) => {
-      // console.log('JWT Callback', { token, user })
-      // console.log('JWT Callback', { token, user, trigger, session });
-
       if (trigger === 'update' && session?.user) {
         return {
           ...token,
@@ -84,12 +103,15 @@ export const authOptions: NextAuthOptions = {
       }
 
       if (user) {
-        const u = user as unknown as Users;
+        const u = user as unknown as User;
         return {
           ...token,
           id: u.id,
-          roleId: u.roleId,
-          avatar: u.avatar,
+          role: u.role,
+          avatar: u.image,
+          lat: u.lat,
+          lng: u.lng,
+          bio: u.bio
         };
       }
 
@@ -116,7 +138,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: '/login',
+    signIn: '/auth/login',
     signOut: '/login',
   },
 };
