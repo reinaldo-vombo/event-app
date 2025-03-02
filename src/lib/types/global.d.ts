@@ -10,9 +10,11 @@ declare module 'next-auth' {
   export interface IUser {
     id: string;
     name: string;
+    userName: string;
     email: string;
     avatar: string;
-    role: number;
+    role: string;
+    password: string;
     bio: string;
     lat: number;
     lng: number;

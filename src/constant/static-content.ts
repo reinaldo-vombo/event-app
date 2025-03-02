@@ -89,3 +89,7 @@ export const STATUS = [
     value: 'privado',
   },
 ];
+export const ROLE = [
+  { id: '1', label: 'ORGANIZER', value: 'ORGANIZER' },
+  { id: '2', label: 'PARTICIPANT', value: 'PARTICIPANT' },
+];

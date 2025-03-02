@@ -1,7 +1,5 @@
-'use client'
-import { Separator } from '@/components/ui/separator'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Eye, Mail, User } from 'lucide-react'
+import { Mail, User } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -14,15 +12,17 @@ import {
    FormLabel,
    FormMessage,
 } from '@/components/ui/form'
-import { registerSchema } from '@/lib/validation/user'
-import { initialState } from '@/constant/static-content'
-import { Button } from '../ui/button'
-import { registerUser } from '@/lib/actions/users'
+import { updatedUserSchema } from '@/lib/validation/user'
+import { initialState, ROLE } from '@/constant/static-content'
+import { updateUser } from '@/lib/actions/users'
+import { Button } from '@/components/ui/button'
+import { FileUpload } from '@/components/shared/file-uploade/FileUpload'
+import { TUserProps } from '@/lib/types'
+import Selector from '@/components/shared/Selector'
 
-
-const Register = () => {
-   async function onSubmit(value: z.infer<typeof registerSchema>) {
-      const result = await registerUser(initialState, value);
+const UpdatedUser = ({ user }: TUserProps) => {
+   async function onSubmit(value: z.infer<typeof updatedUserSchema>) {
+      const result = await updateUser(initialState, value);
       if (result.error) {
          toast.error(result.message)
       }
@@ -31,22 +31,42 @@ const Register = () => {
       }
       // Handle form submission
    }
-   const form = useForm<z.infer<typeof registerSchema>>({
-      resolver: zodResolver(registerSchema),
+   const form = useForm<z.infer<typeof updatedUserSchema>>({
+      resolver: zodResolver(updatedUserSchema),
       defaultValues: {
-         name: "",
-         userName: "",
-         role: "PARTICIPANT",
-         email: "",
-         password: "",
-         confirmPassword: ""
+         name: user?.name,
+         userName: user?.userName,
+         role: user?.role || "PARTICIPANT",
+         email: user?.email,
+         avatar: [],
+         bio: user?.bio,
+         location: {
+            lat: user?.lat,
+            lng: user?.lng
+         }
       }
    })
-
+   const onInvalid = (errors: unknown) => {
+      //This helpe me fix a two week form not submiting god kwon's way bug
+      console.error("Validation Errors:", errors);
+   };
    return (
       <div className='space-y-8'>
          <Form {...form}>
-            <form className='space-y-5' onSubmit={form.handleSubmit(onSubmit)}>
+            <form className='space-y-5' onSubmit={form.handleSubmit(onSubmit, onInvalid)}>
+               <FormField
+                  control={form.control}
+                  name="avatar"
+                  render={({ field }) => (
+                     <FormItem className='w-full'>
+                        <FormLabel className='text-slate-500'>Avatar</FormLabel>
+                        <FormControl>
+                           <FileUpload formField={field} />
+                        </FormControl>
+                        <FormMessage />
+                     </FormItem>
+                  )}
+               />
                <FormField
                   control={form.control}
                   name="name"
@@ -97,46 +117,23 @@ const Register = () => {
                />
                <FormField
                   control={form.control}
-                  name="password"
+                  name="role"
                   render={({ field }) => (
                      <FormItem className='w-full'>
-                        <FormLabel className='text-slate-500'>Palavra-passe</FormLabel>
+                        <FormLabel className='text-slate-500'>Posição</FormLabel>
                         <FormControl>
-                           <div className='relative'>
-                              <Input type='password' placeholder='Palavra-passe' {...field} />
-                              <Eye className='absolute right-[22px] top-[9px] text-slate-300' width={20} />
-                           </div>
+                           <Selector formField={field} options={ROLE} placeholder='Tipo' />
                         </FormControl>
                         <FormMessage />
                      </FormItem>
                   )}
                />
-               <FormField
-                  control={form.control}
-                  name="confirmPassword"
-                  render={({ field }) => (
-                     <FormItem className='w-full'>
-                        <FormLabel className='text-slate-500'>Confirmar Palavra-passe</FormLabel>
-                        <FormControl>
-                           <div className='relative'>
-                              <Input type='password' placeholder='Confirmar' {...field} />
-                              <Eye className='absolute right-[22px] top-[9px] text-slate-300' width={20} />
-                           </div>
-                        </FormControl>
-                        <FormMessage />
-                     </FormItem>
-                  )}
-               />
-               <Button disabled={form.formState.isSubmitting}>Criar</Button>
+
+               <Button className='w-full' disabled={form.formState.isSubmitting}>Atualisar</Button>
             </form>
          </Form>
-         <Separator />
-         <div className='flex items-center justify-center gap-2 text-xs'>
-            <span>Já tenho uma conta</span>
-            <span className='text-alpha cursor-pointer'>Entrar</span>
-         </div>
       </div>
    )
 }
 
-export default Register;
+export default UpdatedUser;

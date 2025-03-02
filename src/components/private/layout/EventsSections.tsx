@@ -1,5 +1,8 @@
-import React from 'react'
+'use client'
+import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
 import { PostCard } from '../event/PostCard'
+import { IMAGE_GALLERY } from '@/constant/static-content'
+import Image from 'next/image'
 // import Masonry, { ResponsiveMasonry } from "react-responsive-masonry"
 const data = {
    id: 'ddd',
@@ -17,19 +20,14 @@ const data = {
 }
 const EventsSections = () => {
    return (
-      <div>
-         <PostCard props={data} />
-         {/* <ResponsiveMasonry
-            columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}
-            gutterBreakpoints={{ 350: "12px", 750: "16px", 900: "24px" }}
-         >
-            <Masonry>
-               <div>1</div>
-               <div>1</div>
-               <div>1</div>
-               <div>1</div>
-            </Masonry>
-         </ResponsiveMasonry> */}
+      <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
+         <div className='grid gap-4'>
+            {IMAGE_GALLERY.map((event) => (
+               <div className='' key={event.id}>
+                  <Image src={event.image} width={200} height={200} className='h-auto max-w-full' alt="" />
+               </div>
+            ))}
+         </div>
       </div>
    )
 }

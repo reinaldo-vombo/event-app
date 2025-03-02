@@ -2,11 +2,11 @@ import type { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { prisma } from '../db/client';
 import { compare } from 'bcrypt';
-import GoogleProvider from "next-auth/providers/google";
+import GoogleProvider from 'next-auth/providers/google';
 
 import { User } from '@prisma/client';
 import { getServerSession } from 'next-auth';
-import { randomBytes } from 'crypto';
+// import { randomBytes } from 'crypto';
 
 export const authOptions: NextAuthOptions = {
   session: {
@@ -29,11 +29,12 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
+        // console.log('credentials', credentials);
         if (!credentials) {
           return null;
         }
 
-        if (!credentials?.email || !credentials.password) {
+        if (!credentials.email || !credentials.password) {
           return null;
         }
 
@@ -43,8 +44,8 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
-
         if (!user) {
+          // console.log('user not found');
           return null;
         }
 
@@ -61,37 +62,39 @@ export const authOptions: NextAuthOptions = {
           id: user.id + '',
           email: user.email,
           name: user.name,
+          userName: user.username,
+          password: user.password,
           role: user.role,
           avatar: user.image,
           bio: user.bio,
           lat: user.lat,
-          lng: user.lng
+          lng: user.lng,
         };
       },
     }),
   ],
   callbacks: {
-    async signIn({ account, profile }) {
-      if(!profile?.email) {
-        throw new Error('Email is required')
-      }
-      await prisma.user.upsert({
-        where: {
-          email: profile.email,
-        },
-        create: {
-          email: profile.email,
-          name: profile.name ?? '',
-          username: profile.email.split("@")[0], // Auto-generate username
-          password: randomBytes(32).toString("hex"),
-        },
-        update: {
-          name: profile.name,
-        },
-      })
-      return true
-    },
-  
+    // async signIn({ account, profile }) {
+    //   if(!profile?.email) {
+    //     throw new Error('Email is required')
+    //   }
+    //   await prisma.user.upsert({
+    //     where: {
+    //       email: profile.email,
+    //     },
+    //     create: {
+    //       email: profile.email,
+    //       name: profile.name ?? '',
+    //       username: profile.email.split("@")[0], // Auto-generate username
+    //       password: randomBytes(32).toString("hex"),
+    //     },
+    //     update: {
+    //       name: profile.name,
+    //     },
+    //   })
+    //   return true
+    // },
+
     jwt: ({ token, user, session, trigger }) => {
       if (trigger === 'update' && session?.user) {
         return {
@@ -111,14 +114,14 @@ export const authOptions: NextAuthOptions = {
           avatar: u.image,
           lat: u.lat,
           lng: u.lng,
-          bio: u.bio
+          bio: u.bio,
         };
       }
 
       return token;
     },
     session: ({ session, token }) => {
-      // console.log('Session Callback', { session, token })
+      // console.log('Session Callback', { session, token });
       return {
         ...session,
         user: {

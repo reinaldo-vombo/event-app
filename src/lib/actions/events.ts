@@ -10,11 +10,22 @@ import { PATH } from '@/constant/static-content';
 
 import { writeFile, mkdir, access, constants } from 'fs/promises'; //uncomment this if want use local save  file
 import { join } from 'path';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/config';
 
 type FormData = z.infer<typeof eventSchema>;
 
+const session = getServerSession(authOptions);
 export async function createEvent(prevState: TState, data: FormData) {
+  const user = await session;
   const { guests } = data;
+  if (!user) {
+    return {
+      error: true,
+      ststus: 404,
+      message: 'Não autorizado',
+    };
+  }
   if (!data.thumbnail || data.thumbnail.length === 0) {
     return {
       error: true,
@@ -26,31 +37,38 @@ export async function createEvent(prevState: TState, data: FormData) {
   const fileUrl = await saveFile(file);
 
   const updatedImages: any = [];
-  for (const galleryEntry of data?.gallery ?? []) {
-    if (!Array.isArray(galleryEntry)) {
-      continue;
-    }
-    const savedImages = [];
-    for (const imageFile of galleryEntry as unknown as File[]) {
-      try {
-        const imageUrl = await saveFile(imageFile);
-        savedImages.push([imageUrl]);
-      } catch (err) {
-        console.error(`Failed to upload images `, err);
-        return {
-          error: {
-            error: true,
-            status: 404,
-            message: `Failed to upload an images`,
-          },
-        };
+
+  if (data.gallery) {
+    for (const galleryEntry of data.gallery) {
+      if (!Array.isArray(galleryEntry)) {
+        console.warn('Skipping non-array entry:', galleryEntry);
+        continue;
+      }
+
+      const savedImages = [];
+
+      for (const imageFile of galleryEntry) {
+        console.log('Processing image:', imageFile);
+
+        try {
+          const imageUrl = await saveFile(imageFile);
+          console.log('Saved URL:', imageUrl);
+          savedImages.push(imageUrl);
+        } catch (err) {
+          console.error(`Failed to upload image`, err);
+          continue;
+        }
+      }
+
+      if (savedImages.length > 0) {
+        updatedImages.push({
+          images: savedImages,
+        });
       }
     }
-
-    updatedImages.push({
-      images: savedImages,
-    });
   }
+  console.log(updatedImages);
+
   async function processGuestImages(guests: any[]) {
     const guestsImages: { name: string; avatar: string }[] = [];
 
@@ -86,6 +104,7 @@ export async function createEvent(prevState: TState, data: FormData) {
             title: data.title,
             description: data.description,
             thumbnail: fileUrl,
+            price: data.price,
             slug: data.slug,
             tickets: data.tickets || '',
             category: data.category,
@@ -93,7 +112,7 @@ export async function createEvent(prevState: TState, data: FormData) {
             longitude: data.location.lng,
             locationName: data.location.name || '',
             tags: data.tags,
-            organizerId: '12345677',
+            organizerId: session?.user.id,
             status: data.status,
             startDate: data.startDate,
             endDate: data.endDate,
@@ -132,6 +151,112 @@ export async function createEvent(prevState: TState, data: FormData) {
       error: true,
       status: 500,
       message: 'Ocorreu um por-favor tente de novo',
+    };
+  }
+}
+export async function updateEvent(
+  prevState: TState,
+  data: FormData,
+  id: string
+) {
+  const currentUser = await session;
+  if (!currentUser) {
+    return {
+      error: true,
+      status: 401,
+      message: 'Você precisa estar logado',
+    };
+  }
+  if (!id) {
+    return {
+      error: true,
+      status: 404,
+      message: 'Evento não encontrado',
+    };
+  }
+  try {
+    let fileUrl: string;
+
+    if (typeof data.thumbnail === 'string') {
+      // If image is already a URL, use it directly
+      fileUrl = data.thumbnail;
+    } else if (data.thumbnail && data.thumbnail[0]) {
+      // If image is a file, process it
+      const file = data.thumbnail[0] as File;
+      // Save the file based on the environment
+      // fileUrl = await uploadToCloudinary(file);
+      fileUrl = await saveFile(file);
+    } else {
+      return {
+        error: true,
+        status: 400,
+        message: 'No image provided',
+      };
+    }
+
+    if (data.gallery) {
+      const updatedColors = [];
+
+      const savedImages = [];
+      for (const imageFile of data.gallery as unknown as (File | string)[]) {
+        if (typeof imageFile === 'string') {
+          savedImages.push(imageFile);
+        } else {
+          try {
+            const imageUrl = await uploadToCloudinary(imageFile);
+
+            savedImages.push(imageUrl);
+          } catch (err) {
+            console.error(`Failed to upload image`, err);
+            return {
+              error: {
+                error: true,
+                status: 404,
+                message: `Failed to upload an image`,
+              },
+            };
+          }
+        }
+
+        updatedColors.push({
+          images: savedImages,
+        });
+      }
+    }
+
+    await prisma.event.update({
+      where: { id },
+      data: {
+        title: data.title,
+        description: data.description,
+        thumbnail: fileUrl,
+        price: data.price,
+        slug: data.slug,
+        tickets: data.tickets || '',
+        category: data.category,
+        latitude: data.location.lat,
+        longitude: data.location.lng,
+        locationName: data.location.name || '',
+        tags: data.tags,
+        organizerId: currentUser.user.id,
+        status: data.status,
+        startDate: data.startDate,
+        endDate: data.endDate,
+        gallery: updatedImages,
+      },
+    });
+    revalidatePath('/');
+    return {
+      success: true,
+      status: 200,
+      message: 'Evento atualizado',
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      error: true,
+      status: 500,
+      message: 'Ocorreu um error ao publicar o producto',
     };
   }
 }

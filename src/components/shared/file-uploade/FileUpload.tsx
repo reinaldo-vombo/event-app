@@ -33,9 +33,10 @@ type TFileUploadProps = {
    };
    maxFiles?: number;
    multiple?: boolean;
+   showGrid?: boolean
 }
 
-export const FileUpload = ({ formField, maxFiles = 1, multiple = false }: TFileUploadProps) => {
+export const FileUpload = ({ formField, maxFiles = 1, multiple = false, showGrid = true }: TFileUploadProps) => {
    const fileInputRef = useRef<HTMLInputElement>(null);
    const [localFiles, setLocalFiles] = useState<File[]>([]);
    const [existingUrls, setExistingUrls] = useState<string[]>([]);
@@ -62,11 +63,11 @@ export const FileUpload = ({ formField, maxFiles = 1, multiple = false }: TFileU
       setLocalFiles(updatedFiles); // Update local state for immediate UI feedback
       formField.onChange(updatedFiles); // Update form state
    };
-   const handleRemoveExistingUrl = (index: number) => {
-      const updatedUrls = [...existingUrls];
-      updatedUrls.splice(index, 1);
-      setExistingUrls(updatedUrls);
-   };
+   // const handleRemoveExistingUrl = (index: number) => {
+   //    const updatedUrls = [...existingUrls];
+   //    updatedUrls.splice(index, 1);
+   //    setExistingUrls(updatedUrls);
+   // };
    const handleRemoveFile = (fileName: string) => {
       setLocalFiles((prev) => prev.filter((file) => file.name !== fileName));
       formField.onChange(localFiles.filter((file) => file.name !== fileName));
@@ -119,9 +120,11 @@ export const FileUpload = ({ formField, maxFiles = 1, multiple = false }: TFileU
                onChange={(e) => handleFileChange(Array.from(e.target.files || []))}
                className="hidden"
             />
-            <div className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,white,transparent)]">
-               <GridPattern />
-            </div>
+            {showGrid ? (
+               <div className="absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,white,transparent)]">
+                  <GridPattern />
+               </div>
+            ) : null}
             <div className="flex flex-col items-center justify-center">
                <p className="relative z-20 font-sans font-bold text-neutral-700 dark:text-neutral-300 text-base">
                   Carregar ficheiro

@@ -1,5 +1,6 @@
 import MarqueeVertical from "@/components/shared/Marque";
 import { Button } from "@/components/ui/button"
+import Link from "next/link";
 
 const HeroSection = () => {
   return (
@@ -18,16 +19,16 @@ const HeroSection = () => {
         </p>
         <div className="mt-10 flex gap-4">
           <Button size="lg" className="h-12 px-8">
-            Get it now
+            <Link href='/party-twon'>Entrar no app</Link>
           </Button>
           <Button size="lg" variant="outline" className="h-12 px-8">
-            Learn more
+            Ler Mais
           </Button>
         </div>
       </div>
       <div className="absolute bottom-4 right-4">
         <div className="flex items-center rounded-full border bg-background/95 px-3 py-1 text-sm backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <span>Made in Framer</span>
+          <span>Made by Reinaldo</span>
         </div>
       </div>
     </section>

@@ -15,24 +15,15 @@ import { signIn } from "next-auth/react"
 import { GoogleLogo } from "@/assets/logo"
 import { useRouter } from 'next/navigation'
 import { toast } from "sonner"
-
-const formSchema = z.object({
-   email: z.string().email({
-      message: "Please enter a valid email address.",
-   }),
-   password: z.string().min(8, {
-      message: "Password must be at least 8 characters.",
-   }),
-   rememberMe: z.boolean().default(false).optional(),
-})
+import { loginSchema } from "@/lib/validation/user"
 
 export default function LoginForm() {
    const router = useRouter()
    const [isLoading, setIsLoading] = React.useState<boolean>(false)
 
    // Initialize react-hook-form
-   const form = useForm<z.infer<typeof formSchema>>({
-      resolver: zodResolver(formSchema),
+   const form = useForm<z.infer<typeof loginSchema>>({
+      resolver: zodResolver(loginSchema),
       defaultValues: {
          email: "",
          password: "",
@@ -40,7 +31,7 @@ export default function LoginForm() {
       },
    })
 
-   async function onSubmit(values: z.infer<typeof formSchema>) {
+   async function onSubmit(values: z.infer<typeof loginSchema>) {
       setIsLoading(true)
       const email = values.email
       const password = values.password
@@ -50,24 +41,23 @@ export default function LoginForm() {
             redirect: false,
             email,
             password,
-            callbackUrl: '/dashboard'
+            callbackUrl: '/party-twon'
          });
 
          if (result?.error) {
             toast.warning("Email ou Senha incorreta");
+            setIsLoading(false)
          }
          if (result?.ok) {
-            toast.success(`Bem-vindo ao portal ${result.status}`);
-            setIsLoading(false)
             router.push("/dashboard");
+            toast.success(`Bem-vindo ao portal`);
+            setIsLoading(false)
          }
       } catch (error) {
          console.error(error);
          toast.error("Ocorreu um erro ao fazer login.");
       }
-
    }
-
 
    return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -116,7 +106,7 @@ export default function LoginForm() {
                         name="password"
                         render={({ field }) => (
                            <FormItem>
-                              <FormLabel>Password</FormLabel>
+                              <FormLabel>Palavra-passe</FormLabel>
                               <FormControl>
                                  <Input placeholder="Palavra-passe"  {...field} />
                               </FormControl>
@@ -145,8 +135,8 @@ export default function LoginForm() {
                 </Button>
               </div> */}
 
-                     <Button type="submit" className="w-full" disabled={isLoading}>
-                        {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                     <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+                        {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                         Sign in
                      </Button>
                   </form>

@@ -1,6 +1,5 @@
 import { LeftSidebar } from '@/components/private/ui/LeftSidebar'
 import { TLayout } from '@/lib/types'
-import { Toaster } from 'sonner'
 
 export default function PrivateLayout({ children }: TLayout) {
    return (
@@ -11,7 +10,6 @@ export default function PrivateLayout({ children }: TLayout) {
          <div className="container min-h-screen">
             {children}
          </div>
-         <Toaster richColors position='top-right' />
       </div>
    )
 }

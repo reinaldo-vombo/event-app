@@ -11,9 +11,7 @@ const useStatus = ({ resloveTo }: { resloveTo: 'success' | 'error' }) => {
    // mock async request
    const onSubmit = () => {
       setStatus('loading');
-      setTimeout(() => {
-         setStatus(resloveTo);
-      }, 3500);
+
    };
 
    return {

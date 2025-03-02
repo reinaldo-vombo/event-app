@@ -42,10 +42,10 @@ const BackDrop = (props: TProps) => {
                         >
                         </motion.p>
                         <motion.div
-                           className="text-[#969799] font-medium w-96 text-[15px] mt-8"
+                           className="text-[#969799] font-medium text-[15px] mt-8"
                            layoutId={`description-${props.id}`}
                         >
-                           <ScrollArea className="h-[400px]">{props.children}</ScrollArea>
+                           <ScrollArea className="h-[500px]">{props.children}</ScrollArea>
                         </motion.div>
                      </div>
                      <Button className="absolute top-8 right-8" onClick={props.onClick}>

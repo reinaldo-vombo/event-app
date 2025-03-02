@@ -24,7 +24,7 @@ async function main() {
 
 // Fetch Customer role ID
 
-console.log('Seeding complete.');
+console.log('Running seed...');
 
 main()
   .catch((e) => {

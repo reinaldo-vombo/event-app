@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 export type TSelectProps = {
-  options: { id: number; label: string; value: string }[];
+  options: { id: string; label: string; value: string }[];
   placeholder: string;
   className?: string;
   formField: {

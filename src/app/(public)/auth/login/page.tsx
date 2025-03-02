@@ -1,9 +1,18 @@
+'use client'
+
 import LoginForm from '@/components/forms/Login'
-import React from 'react'
+import { User } from '@/lib/auth/user'
+import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
+   const router = useRouter()
+   const user = User()
+   if (user) {
+      router.push('/dashboard')
+   }
+
    return (
-      <section className=''>
+      <section>
          <LoginForm />
       </section>
    )
