@@ -5,7 +5,7 @@ export type TSelectProps = {
   placeholder: string;
   className?: string;
   formField: {
-    value: string;
+    value: string | undefined;
     onChange: (value: string) => void;
     ref: any;
   };

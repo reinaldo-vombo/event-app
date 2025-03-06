@@ -2,10 +2,11 @@
 import EventsSections from '@/components/private/layout/EventsSections'
 import Modal from '@/components/shared/animate-modal/Modal'
 import SearchContent from '@/components/shared/search-box/SearchContent'
+import { getAllEvents } from '@/lib/db/querys'
 import { Search } from 'lucide-react'
-import React from 'react'
 
-const page = () => {
+const page = async () => {
+   const data = await getAllEvents()
    return (
       <section>
          <div className="container space-y-4">
@@ -17,7 +18,7 @@ const page = () => {
                   } ><SearchContent /></Modal>
                </div>
             </div>
-            <EventsSections />
+            <EventsSections props={data} />
          </div>
       </section>
    )

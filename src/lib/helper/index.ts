@@ -31,3 +31,14 @@ export function generateUsername(
 
   return username;
 }
+export function extractPublicId(url: string): string | null {
+  try {
+    const parts = url.split('/');
+    const filename = parts[parts.length - 1];
+    const [publicId] = filename.split('.'); // Remove the file extension
+    return parts.includes('image') ? `images/${publicId}` : publicId;
+  } catch (error) {
+    console.error('Failed to extract public ID:', error);
+    return null;
+  }
+}

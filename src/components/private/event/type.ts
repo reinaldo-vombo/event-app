@@ -2,12 +2,11 @@ export type TEvent = {
   id: string;
   slug: string;
   title: string;
-  handle: string;
   description: string;
   tags?: string[];
   thumbnail: string;
   category: string;
-  video?: string;
+  video: string | null;
   gallery?: string[];
   likes?: number;
   comments?: number;
@@ -17,18 +16,15 @@ export type TEvent = {
     title: string;
     price: string;
   }[];
-  location: {
-    lat: number;
-    lng: number;
-    name: string;
-  };
+  startDate: Date;
+  endDate: Date | null;
+  latitude: number;
+  longitude: number;
+  locationName: string;
   guests?: {
     name: string;
     avatar: string;
   }[];
-  shared?: number;
-  retweets?: number;
-  date?: Date;
 };
 
 export type TEventProps = {

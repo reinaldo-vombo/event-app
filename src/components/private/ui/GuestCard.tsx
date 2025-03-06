@@ -101,7 +101,7 @@ const GuesViewer = () => {
             aria-expanded={isOpen}
             layout
             role="button"
-            style={{ borderRadius: 22, width: 500 }}
+            style={{ borderRadius: 22 }}
             tabIndex={0}
             onKeyDown={(e) => {
                if (e.key === "Enter") setStatus(isOpen ? "idle" : "open");

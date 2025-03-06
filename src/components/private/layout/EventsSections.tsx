@@ -1,33 +1,20 @@
 'use client'
-import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry'
-import { PostCard } from '../event/PostCard'
-import { IMAGE_GALLERY } from '@/constant/static-content'
+// import { PostCard } from '../event/PostCard'
 import Image from 'next/image'
-// import Masonry, { ResponsiveMasonry } from "react-responsive-masonry"
-const data = {
-   id: 'ddd',
-   slug: 'hello',
-   thumbnail: '/Firefly.jpg',
-   title: 'Angola Open Source',
-   handle: '@eginalde',
-   description: 'hello',
-   comments: 5,
-   retweets: 20,
-   likes: 10,
-   shared: 5,
-   category: 'hela'
+import { TEventProps } from '../event/type'
+import Link from 'next/link'
+import { PRIVE_ROUTES } from '@/constant/static-content'
 
-}
-const EventsSections = () => {
+const EventsSections = ({ props }: TEventProps) => {
    return (
-      <div className='grid grid-cols-2 md:grid-cols-4 gap-4'>
-         <div className='grid gap-4'>
-            {IMAGE_GALLERY.map((event) => (
-               <div className='' key={event.id}>
-                  <Image src={event.image} width={200} height={200} className='h-auto max-w-full' alt="" />
-               </div>
-            ))}
-         </div>
+      <div className='columns-7 max-w-7xl mx-auto space-y-4'>
+         {props ? props.map((event) => (
+            <div className='rounded-md overflow-hidden' key={event.id}>
+               <Link href={`${PRIVE_ROUTES.root}/events/${event.slug}`}>
+                  <Image src={event.thumbnail} width={500} height={300} alt={event.slug} />
+               </Link>
+            </div>
+         )) : (<p>no events</p>)}
       </div>
    )
 }

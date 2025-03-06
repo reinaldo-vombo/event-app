@@ -12,14 +12,17 @@ import { writeFile, mkdir, access, constants } from 'fs/promises'; //uncomment t
 import { join } from 'path';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/config';
+import { extractPublicId } from '../helper';
 
 type FormData = z.infer<typeof eventSchema>;
 
 const session = getServerSession(authOptions);
+//
+//CREATE EVENT
 export async function createEvent(prevState: TState, data: FormData) {
-  const user = await session;
+  const loggeUser = await session;
   const { guests } = data;
-  if (!user) {
+  if (!loggeUser) {
     return {
       error: true,
       ststus: 404,
@@ -112,7 +115,7 @@ export async function createEvent(prevState: TState, data: FormData) {
             longitude: data.location.lng,
             locationName: data.location.name || '',
             tags: data.tags,
-            organizerId: session?.user.id,
+            organizerId: loggeUser?.user.id,
             status: data.status,
             startDate: data.startDate,
             endDate: data.endDate,
@@ -154,6 +157,8 @@ export async function createEvent(prevState: TState, data: FormData) {
     };
   }
 }
+//
+//UPDATE EVENT
 export async function updateEvent(
   prevState: TState,
   data: FormData,
@@ -181,9 +186,8 @@ export async function updateEvent(
       // If image is already a URL, use it directly
       fileUrl = data.thumbnail;
     } else if (data.thumbnail && data.thumbnail[0]) {
-      // If image is a file, process it
+      // If image is a file, process it to array buffer
       const file = data.thumbnail[0] as File;
-      // Save the file based on the environment
       // fileUrl = await uploadToCloudinary(file);
       fileUrl = await saveFile(file);
     } else {
@@ -194,16 +198,16 @@ export async function updateEvent(
       };
     }
 
+    const updatedImages = [];
     if (data.gallery) {
-      const updatedColors = [];
-
       const savedImages = [];
       for (const imageFile of data.gallery as unknown as (File | string)[]) {
         if (typeof imageFile === 'string') {
           savedImages.push(imageFile);
         } else {
           try {
-            const imageUrl = await uploadToCloudinary(imageFile);
+            // const imageUrl = await uploadToCloudinary(imageFile);
+            const imageUrl = await saveFile(imageFile);
 
             savedImages.push(imageUrl);
           } catch (err) {
@@ -218,7 +222,7 @@ export async function updateEvent(
           }
         }
 
-        updatedColors.push({
+        updatedImages.push({
           images: savedImages,
         });
       }
@@ -326,29 +330,20 @@ export async function deleteProduct(prevState: TState, id: string) {
     revalidatePath('/');
     return {
       success: true,
-      message: 'Produto excluir com sucesso',
+      message: 'Evento excluido',
     };
   } catch (error) {
-    console.error('Erro ao excluir o produto:', error);
+    console.error('Erro ao excluir o evento:', error);
     return {
       error: true,
+      status: 500,
       message: 'Erro ao excluir o produto',
     };
   }
 }
 
 //helper
-function extractPublicId(url: string): string | null {
-  try {
-    const parts = url.split('/');
-    const filename = parts[parts.length - 1];
-    const [publicId] = filename.split('.'); // Remove the file extension
-    return parts.includes('image') ? `images/${publicId}` : publicId;
-  } catch (error) {
-    console.error('Failed to extract public ID:', error);
-    return null;
-  }
-}
+
 //Utility function to save the file in online
 // async function uploadToCloudinary(file: File): Promise<string> {
 //   try {

@@ -39,9 +39,9 @@ export function LeftSidebar() {
    }
    return (
       <div className="flex fixed left-0 z-10 h-screen w-20 flex-col items-center border-r px-2 py-4">
-         <HomeIcon className="h-8 w-8" />
+         <LogoIcon className="h-8 w-8" />
          <nav className="mt-8 flex flex-1 flex-col items-center gap-4">
-            <NavItem href='/' icon={<LogoIcon className="h-6 w-6" />} isActive />
+            <NavItem href='/' icon={<HomeIcon className="h-6 w-6" />} isActive />
             <NavItem href='/dashboard/create-event' icon={<Hash className="h-6 w-6" />} />
             <NavItem href='/' icon={<MessageCircle className="h-6 w-6" />} />
             <NavItem href='/' icon={<Mail className="h-6 w-6" />} />

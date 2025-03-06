@@ -24,9 +24,7 @@ model User {
   username String   @unique // Unique username for mentions
   role     UserRole @default(PARTICIPANT) // User can be an organizer or participant
   rsvps    RSVP[]
-
-  // Authentication
-  //sessions Session[] // Active user sessions
+  sales    Sale[]
 
   // Location Tracking
   lat Float? // Latitude
@@ -72,7 +70,7 @@ model Event {
   tags         Json?
   price        Json?
   status       String
-  tickets      String
+  tickets      Int
   gallery      Json?
   video        String?
   guests       Guest[]
@@ -82,10 +80,21 @@ model Event {
   longitude    Float
   locationName String
   rsvps        RSVP[] // RSVP relation
+  sales        Sale[]
   organizerId  String
   organizer    User      @relation(fields: [organizerId], references: [id], onDelete: Cascade)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+}
+
+model Sale {
+  id        String   @id @default(uuid())
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  buyerId   String
+  buyer     User     @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+  total     Decimal // Store total price
+  createdAt DateTime @default(now())
 }
 
 model RSVP {

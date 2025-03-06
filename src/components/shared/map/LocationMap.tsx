@@ -39,7 +39,6 @@ const LocationMap = ({ formField, currentPosition }: LocationMapProps) => {
             .catch((error) => console.error("Reverse Geocoding Error:", error));
       }
    }, [position.lat, position.lng]);
-   console.log(currentPosition);
 
 
    function LocationMarker() {

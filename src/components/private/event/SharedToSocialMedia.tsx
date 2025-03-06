@@ -1,4 +1,5 @@
 'use client'
+import { PRIVE_ROUTES } from '@/constant/static-content'
 import {
    FacebookShareButton,
    FacebookIcon,
@@ -10,37 +11,46 @@ import {
    WhatsappIcon,
 } from 'next-share'
 
-const SharedToSocialMedia = () => {
+type TProps = {
+   slug: string
+   title: string
+   tags: string[] | undefined
+}
+
+const SharedToSocialMedia = ({ slug, title, tags }: TProps) => {
    return (
       <div className='flex items-center gap-2'>
          <FacebookShareButton
-            url={'https://github.com/next-share'}
-            quote={'next-share is a social share buttons for your next React apps.'}
-            hashtag={'#nextshare'}
+            url={`${PRIVE_ROUTES.share}${slug}`}
+            quote={`🎉 Confira este evento: "${title}"! Não perca essa oportunidade!`}
+            hashtag={'#evento #conecte-se'}
             blankTarget={true}
          >
             <FacebookIcon size={32} round />
          </FacebookShareButton>
          <TwitterShareButton
-            url={'https://github.com/next-share'}
-            title={'next-share is a social share buttons for your next React apps.'}
-            hashtags={['next-share', 'react']}
+            url={`${PRIVE_ROUTES.share}${slug}`}
+            title={`🎉 Confira este evento: "${title}"! Não perca essa oportunidade!`}
+            hashtags={tags ?? ['evento', 'conecte-se']}
             related={['@next-share', '@next-share']}
+            blankTarget={true}
          >
             <TwitterIcon size={32} round />
          </TwitterShareButton>
          <LinkedinShareButton
-            url={'https://github.com/next-share'}
-            title={'next-share is a social share buttons for your next React apps.'}
-            summary={'next-share is a social share buttons for your next React apps.'}
-            source={''}
+            url={`${PRIVE_ROUTES.share}${slug}`}
+            title={`🎉 Confira este evento: "${title}"! Não perca essa oportunidade!`}
+            summary={`Participe do evento "${title}" e conecte-se com pessoas incríveis. Saiba mais agora!`}
+            source={process.env.NEXT_PUBLIC_URL}
+            blankTarget={true}
          >
             <LinkedinIcon size={32} round />
          </LinkedinShareButton>
          <WhatsappShareButton
-            url={'https://github.com/next-share'}
-            title={'next-share is a social share buttons for your next React apps.'}
+            url={`${PRIVE_ROUTES.share}${slug}`}
+            title={`🎉 Confira este evento: "${title}"! Não perca essa oportunidade!`}
             separator=":: "
+            blankTarget={true}
          >
             <WhatsappIcon size={32} round />
          </WhatsappShareButton>

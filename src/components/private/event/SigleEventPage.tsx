@@ -1,53 +1,56 @@
+'use client'
 import Image from 'next/image'
-import React from 'react'
 import UsersGoing from './UsersGoing'
 import SnapShots from '@/components/shared/Gallery'
 import GuesViewer from '../ui/GuestCard'
-import LocationMap from '@/components/shared/map/LocationMap'
 import RegiterToEvent from './RegiterToEvent'
 import SharedToSocialMedia from './SharedToSocialMedia'
-
-
-const tickests = [
-   {
-      id: '1',
-      name: 'Normal',
-      price: 5000,
-      quantity: 1
-   },
-   {
-      id: '2',
-      name: 'Vip',
-      price: 5000,
-      quantity: 1
-   }
-]
-const position = {
-   lat: -8.880950326777082,
-   lng: 13.252440889759589,
-   name: ""
+import { TEvent } from './type'
+import dynamic from 'next/dynamic'
+import { useMemo } from 'react'
+import { format } from 'date-fns'
+type TProps = {
+   props: TEvent
 }
-const SigleEventPage = () => {
+const SigleEventPage = ({ props }: TProps) => {
+   const LocationMap = useMemo(() => dynamic(
+      () => import('@/components/shared/map/LocationMap'),
+      {
+         loading: () => <div className="h-72 w-full flex items-center justify-center">O mapa está carregando</div>,
+         ssr: false
+      }
+   ), [])
+   const position = {
+      lat: props.latitude,
+      lng: props.longitude,
+      name: props.locationName
+   }
+
    return (
       <section className='space-y-5 py-10'>
          <div className='relative h-[30rem]'>
-            <Image src='/avatar.jpg' className='object-cover rounded-lg' fill sizes='100%' alt='event' />
+            <Image src={props.thumbnail} className='object-cover rounded-lg' fill sizes='100%' alt={props.slug} />
          </div>
          <div className='flex justify-between'>
             <div className='space-y-3'>
-               <h2 className='text-3xl font-semibold'>Angola Open Source</h2>
+               <h2 className='text-3xl font-semibold'>{props.title}</h2>
                <ul className='space-y-4'>
                   <li><b>Preço:</b> 5000(kz)</li>
-                  <li><b>Categoria:</b> Web shit</li>
-                  <li><b>Localização:</b> Avenida Castro vandune</li>
-                  <li><b>Data:</b> 19/01/2025</li>
+                  <li><b>Categoria:</b> {props.category}</li>
+                  <li><b>Localização:</b> {props.locationName}</li>
+                  <li><b>Data:</b> {format(props.startDate, "PPP")}</li>
+                  <li><b>Hora:</b> {props.startDate.getHours()}</li>
                </ul>
-               <SharedToSocialMedia />
+               <SharedToSocialMedia
+                  slug={props.slug}
+                  title={props.title}
+                  tags={props.tags}
+               />
             </div>
             <div className='space-y-6'>
                <h3 className='font-semibold text-3xl'>Pessoas que vão</h3>
                <UsersGoing />
-               <RegiterToEvent tickests={tickests} />
+               <RegiterToEvent props={props} />
             </div>
          </div>
          <div className='space-y-6'>

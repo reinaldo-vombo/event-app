@@ -2,7 +2,7 @@
 
 import { useMemo } from "react"
 import { cn } from "@/lib/utils"
-import { CalendarIcon, Cat, Dog, Fish, Loader, Plus, Rabbit, Turtle, X } from 'lucide-react'
+import { CalendarIcon, Loader, Plus, X } from 'lucide-react'
 import { FileUpload } from "@/components/shared/file-uploade/FileUpload"
 import { useFieldArray, useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -25,7 +25,7 @@ import {
    PopoverTrigger,
 } from "@/components/ui/popover"
 import { TimePeriodSelect } from "@/components/ui/time-period-select"
-import { CATEGORYS, initialState, STATUS } from "@/constant/static-content"
+import { CATEGORYS, eventTags, initialState, STATUS } from "@/constant/static-content"
 import TextEditor from "../../shared/text-editor/TextEditor"
 import { MultiSelect } from "@/components/ui/multi-select"
 import TimePicker from "@/components/shared/TimeInput"
@@ -40,16 +40,9 @@ import AddGuestButton from "../event/AddGuestButton"
 import { createEvent } from "@/lib/actions/events"
 import NoGuest from "../event/NoGuest"
 import { toast } from "sonner"
+import { ScrollArea } from "@/components/ui/scroll-area"
 // import GuestPreview from "./GuestPreview"
 
-
-const frameworksList = [
-   { value: "react", label: "React", icon: Turtle },
-   { value: "angular", label: "Angular", icon: Cat },
-   { value: "vue", label: "Vue", icon: Dog },
-   { value: "svelte", label: "Svelte", icon: Rabbit },
-   { value: "ember", label: "Ember", icon: Fish },
-];
 const CreateEventForm = () => {
    const LocationMap = useMemo(() => dynamic(
       () => import('../../shared/map/LocationMap'),
@@ -381,7 +374,7 @@ const CreateEventForm = () => {
                               <FormControl>
                                  <MultiSelect
                                     field={field}
-                                    options={frameworksList}
+                                    options={eventTags}
                                     defaultValue={field.value}
                                     placeholder="Selecione tags"
                                     variant="inverted"
@@ -466,7 +459,7 @@ const CreateEventForm = () => {
                   <div className="mt-14 flex flex-col">
                      <Modal size="lg" title="" trigger={<AddGuestButton />} className="mx-auto">
                         {guestFields.length > 0 ? guestFields.map((guest, index) => (
-                           <div key={index} className="space-y-6">
+                           <ScrollArea key={index} className="space-y-6 h-[500px]">
                               <div className="flex items-center">
                                  <FormField
                                     control={form.control}
@@ -508,7 +501,7 @@ const CreateEventForm = () => {
                                  <Button className="bg-red-500" onClick={() => removeGuest(index)}><X /></Button>
 
                               </div>
-                           </div>
+                           </ScrollArea>
                         )) : (<NoGuest />)}
                         <Button
                            type="button"
