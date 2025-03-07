@@ -58,3 +58,16 @@ export const getEventsByOrganizer = async (id: string | undefined) => {
     tags: Array.isArray(event.tags) ? (event.tags as string[]) : [],
   }));
 };
+export const getEventsGuestById = async (id: string | undefined) => {
+  const guests = await prisma.guest.findMany({
+    where: {
+      id,
+    },
+  });
+
+
+  return guests.map((guest) => ({
+    ...guest,
+    avatar: Array.isArray(guest.avatar) ? (guest.avatar as string[]) : [],
+  }));
+};

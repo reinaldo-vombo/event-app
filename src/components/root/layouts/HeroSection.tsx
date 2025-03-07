@@ -12,10 +12,9 @@ const HeroSection = () => {
       </div>
       {/* <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-background/20" /> */}
       <div className="container text-white relative flex min-h-[100vh] flex-col items-center justify-center text-center">
-        <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white leading-tight">
-          Transforme seu tempo livre em experiências <ColourfulText text="inesquecíveis!" />
-          <span className="text-blue-600 dark:text-blue-400"> Descubra, conecte-se e participe </span>
-          dos melhores eventos perto de você. 🎉
+        <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white max-w-lg leading-tight">
+          Descubra, conecte-se e participe dos melhores <ColourfulText text="eventos perto de você." /> 🎉
+
         </h1>
         <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground sm:text-xl">
           Explore eventos incríveis, conheça pessoas novas e viva experiências inesquecíveis.

@@ -11,8 +11,16 @@ import { useMemo } from 'react'
 import { format } from 'date-fns'
 type TProps = {
    props: TEvent
+   guests: {
+      id: string;
+      name: string;
+      avatar: string;
+      eventId: string | null;
+   }[]
 }
-const SigleEventPage = ({ props }: TProps) => {
+const SigleEventPage = ({ props, guests }: TProps) => {
+   console.log('gusrts', guests);
+
    const LocationMap = useMemo(() => dynamic(
       () => import('@/components/shared/map/LocationMap'),
       {

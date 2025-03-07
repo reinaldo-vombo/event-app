@@ -15,14 +15,12 @@ import { authOptions } from '../auth/config';
 import { extractPublicId } from '../helper';
 
 type FormData = z.infer<typeof eventSchema>;
-
-const session = getServerSession(authOptions);
 //
 //CREATE EVENT
 export async function createEvent(prevState: TState, data: FormData) {
-  const loggeUser = await session;
+  const session = await getServerSession(authOptions);
   const { guests } = data;
-  if (!loggeUser) {
+  if (!session) {
     return {
       error: true,
       ststus: 404,
@@ -98,7 +96,7 @@ export async function createEvent(prevState: TState, data: FormData) {
 
     return guestsImages;
   }
-
+const corvertTickets = parseInt(data.tickets ?? '0');
   try {
     await prisma.$transaction(
       async (tx) => {
@@ -109,13 +107,13 @@ export async function createEvent(prevState: TState, data: FormData) {
             thumbnail: fileUrl,
             price: data.price,
             slug: data.slug,
-            tickets: data.tickets || '',
+            tickets: corvertTickets,
             category: data.category,
             latitude: data.location.lat,
             longitude: data.location.lng,
             locationName: data.location.name || '',
             tags: data.tags,
-            organizerId: loggeUser?.user.id,
+            organizerId: session.user.id,
             status: data.status,
             startDate: data.startDate,
             endDate: data.endDate,
@@ -124,6 +122,7 @@ export async function createEvent(prevState: TState, data: FormData) {
         });
         if (guests && guests.length > 0) {
           const processedGuests = await processGuestImages(guests);
+console.log(processedGuests);
 
           if (processedGuests.length > 0) {
             await tx.guest.createMany({
@@ -164,8 +163,8 @@ export async function updateEvent(
   data: FormData,
   id: string
 ) {
-  const currentUser = await session;
-  if (!currentUser) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
     return {
       error: true,
       status: 401,
@@ -227,7 +226,7 @@ export async function updateEvent(
         });
       }
     }
-
+    const corvertTickets = parseInt(data.tickets ?? '0');
     await prisma.event.update({
       where: { id },
       data: {
@@ -236,13 +235,13 @@ export async function updateEvent(
         thumbnail: fileUrl,
         price: data.price,
         slug: data.slug,
-        tickets: data.tickets || '',
+        tickets: corvertTickets,
         category: data.category,
         latitude: data.location.lat,
         longitude: data.location.lng,
         locationName: data.location.name || '',
         tags: data.tags,
-        organizerId: currentUser.user.id,
+        organizerId: session.user.id,
         status: data.status,
         startDate: data.startDate,
         endDate: data.endDate,

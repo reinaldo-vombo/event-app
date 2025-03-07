@@ -1,5 +1,5 @@
 import SigleEvent from '@/components/private/event/SigleEventPage'
-import { getEventBySlug } from '@/lib/db/querys';
+import { getEventBySlug, getEventsGuestById } from '@/lib/db/querys';
 import { Metadata, ResolvingMetadata } from 'next';
 type TSearchParams = {
    params: Promise<{ slug: string }>
@@ -27,6 +27,9 @@ export async function generateMetadata(
 }
 export default async function SigleEventPage({ params }: TSearchParams) {
    const slug = (await params).slug;
-   const data = await getEventBySlug(slug)
-   return <SigleEvent props={data} />
+   const [data, guest] = await Promise.all([
+      getEventBySlug(slug),
+      getEventBySlug(slug).then(event => getEventsGuestById(event.id)), // Wait for `data` first
+   ]);
+   return <SigleEvent props={data} guests={guest} />
 }
