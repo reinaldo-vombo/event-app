@@ -75,7 +75,7 @@ const SigleEventPage = ({ props, guests }: TProps) => {
             <div className='space-y-6 col-span-6'>
                <h4 className='font-semibold text-3xl'>Localização</h4>
                <div className='col-span-12'>
-                  <LocationMap currentPosition={position} />
+                  <LocationMap currentPosition={position} zoom={14} />
                </div>
             </div>
          </div>

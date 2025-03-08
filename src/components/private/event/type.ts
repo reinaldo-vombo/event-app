@@ -11,7 +11,7 @@ export type TEvent = {
   likes?: number;
   comments?: number;
   status: string;
-  tickets: string;
+  tickets: number;
   price: {
     title: string;
     price: string;

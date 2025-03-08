@@ -65,9 +65,5 @@ export const getEventsGuestById = async (id: string | undefined) => {
     },
   });
 
-
-  return guests.map((guest) => ({
-    ...guest,
-    avatar: Array.isArray(guest.avatar) ? (guest.avatar as string[]) : [],
-  }));
+  return guests;
 };

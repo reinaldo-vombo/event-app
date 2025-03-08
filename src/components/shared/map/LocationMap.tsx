@@ -18,12 +18,13 @@ type LocationMapProps = {
       }
       onChange: (location: any) => void
    }
+   zoom?: number
 };
 const ICON = icon({
    iconUrl: "/marker-icon.png",
 })
 
-const LocationMap = ({ formField, currentPosition }: LocationMapProps) => {
+const LocationMap = ({ formField, currentPosition, zoom = 13 }: LocationMapProps) => {
    const [position, setPosition] = useState<{ lat: number; lng: number; name?: string }>(
       currentPosition || { lat: 51.505, lng: -0.09 }
    )
@@ -59,7 +60,12 @@ const LocationMap = ({ formField, currentPosition }: LocationMapProps) => {
       );
    }
    return (
-      <MapContainer className='z-10' center={position} zoom={13} scrollWheelZoom={false} style={{ height: "300px", width: "100%", borderRadius: "10px" }}>
+      <MapContainer
+         className='z-10'
+         center={position}
+         zoom={zoom}
+         scrollWheelZoom={false}
+         style={{ height: "300px", width: "100%", borderRadius: "10px" }}>
          <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
