@@ -40,7 +40,7 @@ export const FileUpload = ({ formField, maxFiles = 1, multiple = false, showGrid
    const fileInputRef = useRef<HTMLInputElement>(null);
    const [localFiles, setLocalFiles] = useState<File[]>([]);
    const [existingUrls, setExistingUrls] = useState<string[]>([]);
-
+   console.log(existingUrls)
 
    // Sync form field value with local state when field.value changes
    useEffect(() => {

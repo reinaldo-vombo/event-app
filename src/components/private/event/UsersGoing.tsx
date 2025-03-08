@@ -1,12 +1,12 @@
 import { demo1, demo2, demo3, demo4, demo5 } from '@/assets/images';
 import Image from 'next/image';
 import React from 'react'
-type TProps = {
-   users: string[];
-}
+// type TProps = {
+//    users: string[];
+// }
 const images = [demo1, demo2, demo3, demo4, demo5]
 
-const UsersGoing = ({ }) => {
+const UsersGoing = () => {
    return (
       <div className="flex -space-x-4 rtl:space-x-reverse">
          {images.map((item, index) => (

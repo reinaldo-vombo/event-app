@@ -38,7 +38,7 @@ const Calendar = () => {
 
    // Generate the calendar days including previous and next month days
    const generateCalendarDays = () => {
-      let daysArray = [];
+      const daysArray = [];
 
       // Add days from the previous month if the month doesn't start on Sunday
       if (startDayOfMonth > 0) {
@@ -159,13 +159,13 @@ const Calendar = () => {
                         <motion.div
                            key={index}
                            className={`p-2 rounded-lg center cursor-pointer ${date.currentMonth &&
-                                 date.day === new Date().getDate() &&
-                                 currentDate.getMonth() === new Date().getMonth() &&
-                                 currentDate.getFullYear() === new Date().getFullYear()
-                                 ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                                 : date.currentMonth
-                                    ? "bg-muted/90 hover:bg-muted/65"
-                                    : "bg-neutral-300 dark:bg-neutral-900 text-gray-400 dark:text-gray-500"
+                              date.day === new Date().getDate() &&
+                              currentDate.getMonth() === new Date().getMonth() &&
+                              currentDate.getFullYear() === new Date().getFullYear()
+                              ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                              : date.currentMonth
+                                 ? "bg-muted/90 hover:bg-muted/65"
+                                 : "bg-neutral-300 dark:bg-neutral-900 text-gray-400 dark:text-gray-500"
                               }`}
                            initial={{ opacity: 0 }}
                            animate={{ opacity: 1 }}
