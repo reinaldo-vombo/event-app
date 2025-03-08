@@ -15,7 +15,7 @@ const page = async () => {
                <div className='size-7'>
                   <Modal id={3} trigger={
                      <Search />
-                  } ><SearchContent /></Modal>
+                  } ><SearchContent events={data} /></Modal>
                </div>
             </div>
             <EventsSections props={data} />
