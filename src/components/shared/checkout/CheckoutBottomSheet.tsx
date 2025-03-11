@@ -14,6 +14,7 @@ type TicketInfo = {
    date: string
    location: string
    price: number
+   image: string
 }
 
 interface CheckoutBottomSheetProps {
@@ -22,7 +23,7 @@ interface CheckoutBottomSheetProps {
    ticketInfo: TicketInfo
 }
 
-export function CheckoutBottomSheet({ open, onOpenChange, ticketInfo }: CheckoutBottomSheetProps) {
+export function CheckoutBottomSheet({ open, onOpenChange, ticketInfo, }: CheckoutBottomSheetProps) {
    const [step, setStep] = useState(1)
    const [userDetails, setUserDetails] = useState({
       name: "",

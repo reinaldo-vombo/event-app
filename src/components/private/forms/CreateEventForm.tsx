@@ -458,51 +458,54 @@ const CreateEventForm = () => {
                   </div>
                   <div className="mt-14 flex flex-col">
                      <Modal size="lg" title="" trigger={<AddGuestButton />} className="mx-auto">
-                        {guestFields.length > 0 ? guestFields.map((guest, index) => (
-                           <ScrollArea key={index} className="space-y-6 h-[500px]">
-                              <div className="flex items-center">
-                                 <FormField
-                                    control={form.control}
-                                    name={`guests.${index}.avatar`}
-                                    render={({ field }) => (
-                                       <FormItem>
-                                          <FormLabel>Foto do convidado</FormLabel>
-                                          <FormControl>
-                                             <FileUpload formField={field} multiple={true} maxFiles={5} />
-                                          </FormControl>
-                                          <FormDescription>
-                                             Foto do convidado.
-                                          </FormDescription>
-                                          <FormMessage />
-                                       </FormItem>
-                                    )}
-                                 />
-                              </div>
-                              <div className="flex items-center gap-4">
-                                 <FormField
-                                    control={form.control}
-                                    name={`guests.${index}.name`}
-                                    render={({ field }) => (
-                                       <FormItem className="w-full">
-                                          <FormLabel>Nome do convidado</FormLabel>
-                                          <FormControl>
-                                             <Input
-                                                placeholder="Nome do convidado"
-                                                {...field}
-                                             />
-                                          </FormControl>
-                                          <FormDescription>
-                                             Nome do convidado.
-                                          </FormDescription>
-                                          <FormMessage />
-                                       </FormItem>
-                                    )}
-                                 />
-                                 <Button className="bg-red-500" onClick={() => removeGuest(index)}><X /></Button>
+                        <ScrollArea className="space-y-6 h-[400px]">
+                           {guestFields.length > 0 ? guestFields.map((guest, index) => (
+                              <div key={index}>
+                                 <div className="flex items-center">
+                                    <FormField
+                                       control={form.control}
+                                       name={`guests.${index}.avatar`}
+                                       render={({ field }) => (
+                                          <FormItem>
+                                             <FormLabel>Foto do convidado</FormLabel>
+                                             <FormControl>
+                                                <FileUpload formField={field} multiple={true} maxFiles={5} />
+                                             </FormControl>
+                                             <FormDescription>
+                                                Foto do convidado.
+                                             </FormDescription>
+                                             <FormMessage />
+                                          </FormItem>
+                                       )}
+                                    />
+                                 </div>
+                                 <div className="flex items-center gap-4">
+                                    <FormField
+                                       control={form.control}
+                                       name={`guests.${index}.name`}
+                                       render={({ field }) => (
+                                          <FormItem className="w-full">
+                                             <FormLabel>Nome do convidado</FormLabel>
+                                             <FormControl>
+                                                <Input
+                                                   placeholder="Nome do convidado"
+                                                   {...field}
+                                                />
+                                             </FormControl>
+                                             <FormDescription>
+                                                Nome do convidado.
+                                             </FormDescription>
+                                             <FormMessage />
+                                          </FormItem>
+                                       )}
+                                    />
+                                    <Button className="bg-red-500" onClick={() => removeGuest(index)}><X /></Button>
 
+                                 </div>
                               </div>
-                           </ScrollArea>
-                        )) : (<NoGuest />)}
+                           )) : (<NoGuest />)}
+
+                        </ScrollArea>
                         <Button
                            type="button"
                            className='bg-green-500 transition-colors hover:bg-green-600 w-full mt-7'

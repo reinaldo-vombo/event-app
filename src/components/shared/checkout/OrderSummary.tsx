@@ -9,6 +9,7 @@ type TicketInfo = {
    date: string
    location: string
    price: number
+   image: string
 }
 
 interface OrderSummaryProps {
@@ -17,7 +18,8 @@ interface OrderSummaryProps {
 }
 
 export function OrderSummary({ ticketInfo, onNext }: OrderSummaryProps) {
-   const { title, date, location, price } = ticketInfo
+
+   const { title, date, location, price, image } = ticketInfo
    const serviceFee = price * 0.1 // 10% service fee
    const total = price + serviceFee
 
@@ -25,7 +27,7 @@ export function OrderSummary({ ticketInfo, onNext }: OrderSummaryProps) {
       <div className="space-y-6">
          <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative w-full sm:w-32 h-24 rounded-md overflow-hidden flex-shrink-0">
-               <Image src="/placeholder.svg?height=200&width=300" alt={title} fill className="object-cover" />
+               <Image src={image} alt={title} fill className="object-cover" />
             </div>
             <div className="flex-1">
                <h3 className="font-semibold text-lg">{title}</h3>

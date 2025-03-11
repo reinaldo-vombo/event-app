@@ -5,32 +5,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { MicOff, X } from "lucide-react";
 import { useState } from "react";
 
-const initialCallUsers = [
-   {
-      name: "Le Baller",
-      role: "CEO",
-      image: "/avatar.jpg",
-      id: 1,
-   },
-   {
-      name: "Romanus",
-      role: "Backend lead",
-      image: "/avatar.jpg",
-      id: 2,
-   },
-   {
-      name: "Frozen bird",
-      role: "Project manager",
-      image: "/avatar.jpg",
-      id: 3,
-   },
-   {
-      name: "The !nvestor",
-      role: "!nvestor",
-      image: "/avatar.jpg",
-      id: 4,
-   },
-];
 
 type Status = "idle" | "open" | "hovered";
 
@@ -40,17 +14,24 @@ const springTransition = {
    damping: 20,
 };
 
-const GuesViewer = () => {
+type Props = {
+   guests: {
+      id: string,
+      name: string,
+      avatar: string,
+      eventId: string | null
+   }[]
+}
+const GuesViewer = ({ guests }: Props) => {
    const [status, setStatus] = useState<Status>("idle");
-   const [callUsers, setCallUsers] = useState(initialCallUsers); // Manage user state
    const isOpen = status === "open";
 
-   const removeUser = (id: number) => {
-      setCallUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
-   };
+   // const removeUser = (id: string) => {
+   //    setCallUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+   // };
 
    const renderUserProfiles = (stacked?: boolean, details?: boolean) =>
-      callUsers.map((user) => (
+      guests.map((user) => (
          <div key={user.id} className="flex items-center justify-between">
             <div className="flex items-center gap-5">
                <motion.div
@@ -62,7 +43,7 @@ const GuesViewer = () => {
                      }
                   )}
                   style={{
-                     backgroundImage: `url(${user.image || "default_image.jpg"})`,
+                     backgroundImage: `url(${user.avatar || "default_image.jpg"})`,
                      backgroundSize: "cover",
                   }}
                />
@@ -78,14 +59,13 @@ const GuesViewer = () => {
                         layoutId={`userrole-${user.id}`}
                         className="text-muted-foreground text-sm"
                      >
-                        {user.role}
+                        Role
                      </motion.p>
                   </div>
                )}
             </div>
             {details && (
                <button
-                  onClick={() => removeUser(user.id)} // Call removeUser function
                   className="border-red-500 border bg-red-100 text-red-500 text-sm p-1 rounded font-semibold"
                >
                   Remove {user.name} from call

@@ -49,7 +49,7 @@ export default function LoginForm() {
             setIsLoading(false)
          }
          if (result?.ok) {
-            router.push("/dashboard");
+            router.push("/party-twon");
             toast.success(`Bem-vindo ao portal`);
             setIsLoading(false)
          }

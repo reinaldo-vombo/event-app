@@ -19,7 +19,7 @@ type TProps = {
    }[]
 }
 const SigleEventPage = ({ props, guests }: TProps) => {
-   console.log('gusrts', guests);
+   console.log('gusrts', props.gallery);
 
    const LocationMap = useMemo(() => dynamic(
       () => import('@/components/shared/map/LocationMap'),
@@ -36,8 +36,14 @@ const SigleEventPage = ({ props, guests }: TProps) => {
 
    return (
       <section className='space-y-5 py-10'>
-         <div className='relative h-[30rem]'>
-            <Image src={props.thumbnail} className='object-cover rounded-lg' fill sizes='100%' alt={props.slug} />
+         <div className='relative h-[35rem]'>
+            <Image
+               src={props.thumbnail}
+               className=' rounded-lg'
+               fill
+               sizes='100%'
+               alt={props.slug}
+            />
          </div>
          <div className='flex justify-between'>
             <div className='space-y-3'>
@@ -69,13 +75,13 @@ const SigleEventPage = ({ props, guests }: TProps) => {
             <div className='space-y-6 col-span-6'>
                <h4 className='font-semibold text-3xl'>Covidados</h4>
                <div className='col-span-12'>
-                  <GuesViewer />
+                  <GuesViewer guests={guests} />
                </div>
             </div>
             <div className='space-y-6 col-span-6'>
                <h4 className='font-semibold text-3xl'>Localização</h4>
                <div className='col-span-12'>
-                  <LocationMap currentPosition={position} zoom={14} />
+                  <LocationMap currentPosition={position} zoom={15} />
                </div>
             </div>
          </div>

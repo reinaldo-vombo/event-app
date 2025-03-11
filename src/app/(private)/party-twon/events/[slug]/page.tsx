@@ -31,5 +31,6 @@ export default async function SigleEventPage({ params }: TSearchParams) {
       getEventBySlug(slug),
       getEventBySlug(slug).then(event => getEventsGuestById(event.id)), // Wait for `data` first
    ]);
+
    return <SigleEvent props={data} guests={guest} />
 }

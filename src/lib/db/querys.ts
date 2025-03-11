@@ -81,7 +81,7 @@ export const getEventsByOrganizer = async (id: string | undefined) => {
 export const getEventsGuestById = async (id: string | undefined) => {
   const guests = await prisma.guest.findMany({
     where: {
-      id,
+      eventId: id,
     },
   });
 

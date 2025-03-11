@@ -38,13 +38,13 @@ export default function EventTicket({ title, date, location, price, image }: Eve
                   <span>{location}</span>
                </div>
                <div className="mt-6">
-                  <p className="text-2xl font-bold">${price.toFixed(2)}</p>
+                  <p className="text-2xl font-bold">${price}</p>
                   <p className="text-xs text-muted-foreground mt-1">All taxes included</p>
                </div>
             </CardContent>
             <CardFooter>
                <Button className="w-full" size="lg" onClick={() => setIsCheckoutOpen(true)}>
-                  Buy Ticket
+                  Comprar bilhete
                </Button>
             </CardFooter>
          </Card>
@@ -54,6 +54,7 @@ export default function EventTicket({ title, date, location, price, image }: Eve
             onOpenChange={setIsCheckoutOpen}
             ticketInfo={{
                title,
+               image,
                date,
                location,
                price,
