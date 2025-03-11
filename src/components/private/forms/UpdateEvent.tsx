@@ -37,7 +37,7 @@ import { Input } from "@/components/ui/input"
 import { slugify } from "@/lib/helper"
 import dynamic from "next/dynamic"
 import AddGuestButton from "../event/AddGuestButton"
-import { createEvent } from "@/lib/actions/events"
+import { createEvent, updateEvent } from "@/lib/actions/events"
 import NoGuest from "../event/NoGuest"
 import { TEvent } from "../event/type"
 import { toast } from 'sonner'
@@ -62,6 +62,11 @@ const UpdatedEvent = ({ props }: TProps) => {
          ssr: false
       }
    ), [])
+   const loc = {
+      lat: props.latitude,
+      lng: props.longitude,
+      name: props.locationName
+   }
    const form = useForm<z.infer<typeof updateEventSchema>>({
       resolver: zodResolver(updateEventSchema),
       defaultValues: {
@@ -74,8 +79,8 @@ const UpdatedEvent = ({ props }: TProps) => {
          category: props.category,
          price: props.price,
          status: props.status,
-         tickets: props.tickets,
-         location: props.location,
+         tickets: '',
+         location: loc,
          guests: props.guests,
          startDate: new Date(),
          endDate: new Date(),
@@ -98,7 +103,7 @@ const UpdatedEvent = ({ props }: TProps) => {
    // const type = form.watch("status");
 
    async function onSubmit(values: z.infer<typeof updateEventSchema>) {
-      const results = await createEvent(initialState, values)
+      const results = await updateEvent(initialState, values, props.id)
       if (results?.error) {
          toast.error(results?.message)
          console.log(results.message);

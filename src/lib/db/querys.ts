@@ -34,6 +34,26 @@ export const getEventBySlug = async (slug: string) => {
       typeof event.price === 'string' ? JSON.parse(event.price) : event.price,
   };
 };
+
+export const getEventById = async (id: string) => {
+  const event = await prisma.event.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!event) {
+    throw new Error('Product not found');
+  }
+
+  return {
+    ...event,
+    tags: Array.isArray(event.tags) ? (event.tags as string[]) : [],
+    gallery: Array.isArray(event.gallery) ? (event.gallery as string[]) : [],
+    price:
+      typeof event.price === 'string' ? JSON.parse(event.price) : event.price,
+  };
+};
 export const getEventsByOrganizer = async (id: string | undefined) => {
   const events = await prisma.event.findMany({
     where: {

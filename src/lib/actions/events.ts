@@ -247,6 +247,11 @@ export async function updateEvent(
     });
     revalidatePath('/');
     return {
+      sucess: true,
+      status: 200,
+      message: 'Evento atualizado',
+    }
+    return {
       success: true,
       status: 200,
       message: 'Evento atualizado',

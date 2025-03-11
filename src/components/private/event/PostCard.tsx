@@ -7,7 +7,7 @@ type TProps = {
 }
 
 export function PostCard({ props }: TProps) {
-   const { title, thumbnail, handle, } = props;
+   const { title, thumbnail, } = props;
    return (
       <Card className="border-0 w-full relative flex flex-col shadow-none text-white">
          <Image src={thumbnail} fill alt="Post image" className="w-full object-cover rounded-lg" />
@@ -21,7 +21,7 @@ export function PostCard({ props }: TProps) {
                      <span className="text-muted-foreground">17 Jan</span>
                   </div>
                </div>
-               <span className="text-muted-foreground">@{handle}</span>
+
                <span className="text-muted-foreground">·</span>
             </div>
          </CardHeader>
