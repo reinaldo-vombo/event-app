@@ -33,13 +33,12 @@ const SigleEventPage = ({ props, guests }: TProps) => {
       lng: props.longitude,
       name: props.locationName
    }
-
    return (
-      <section className='space-y-5 py-10'>
-         <div className='relative h-[35rem]'>
+      <section className='space-y-5 py-10 mx-40'>
+         <div className='relative h-[25rem]'>
             <Image
                src={props.thumbnail}
-               className=' rounded-lg'
+               className='rounded-lg'
                fill
                sizes='100%'
                alt={props.slug}
@@ -49,7 +48,7 @@ const SigleEventPage = ({ props, guests }: TProps) => {
             <div className='space-y-3'>
                <h2 className='text-3xl font-semibold'>{props.title}</h2>
                <ul className='space-y-4'>
-                  <li><b>Preço:</b> 5000(kz)</li>
+                  <li><b>Preço:</b> {props.price[0].price}(kz)</li>
                   <li><b>Categoria:</b> {props.category}</li>
                   <li><b>Localização:</b> {props.locationName}</li>
                   <li><b>Data:</b> {format(props.startDate, "PPP")}</li>

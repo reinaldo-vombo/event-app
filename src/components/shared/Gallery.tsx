@@ -4,12 +4,12 @@ import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { demo1, demo2, demo3, demo4, demo5, demo6, demo7 } from "@/assets/images";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 
 interface Element {
    id: number;
    height: number;
-   img: string;
+   img: StaticImageData;
 }
 
 interface Column {

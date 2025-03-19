@@ -14,9 +14,10 @@ interface EventTicketProps {
    location: string
    price: number
    image: string
+   eventId: string
 }
 
-export default function EventTicket({ title, date, location, price, image }: EventTicketProps) {
+export default function EventTicket({ title, date, location, price, image, eventId }: EventTicketProps) {
    const [isCheckoutOpen, setIsCheckoutOpen] = useState(false)
 
    return (
@@ -58,6 +59,7 @@ export default function EventTicket({ title, date, location, price, image }: Eve
                date,
                location,
                price,
+               eventId
             }}
          />
       </>

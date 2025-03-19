@@ -15,6 +15,7 @@ type TicketInfo = {
    location: string
    price: number
    image: string
+   eventId: string
 }
 
 interface CheckoutBottomSheetProps {
@@ -111,6 +112,7 @@ export function CheckoutBottomSheet({ open, onOpenChange, ticketInfo, }: Checkou
                         userDetails={userDetails}
                         onChange={handleUserDetailsChange}
                         onBack={handleBack}
+                        ticketInfo={ticketInfo}
                         onComplete={handleComplete}
                      />
                   )}

@@ -37,7 +37,7 @@ import { Input } from "@/components/ui/input"
 import { slugify } from "@/lib/helper"
 import dynamic from "next/dynamic"
 import AddGuestButton from "../event/AddGuestButton"
-import { createEvent, updateEvent } from "@/lib/actions/events"
+import { updateEvent } from "@/lib/actions/events"
 import NoGuest from "../event/NoGuest"
 import { TEvent } from "../event/type"
 import { toast } from 'sonner'
@@ -73,7 +73,7 @@ const UpdatedEvent = ({ props }: TProps) => {
          title: props.title,
          description: props.description,
          slug: props.slug,
-         thumbnail: props.thumbnail,
+         thumbnail: [],
          gallery: [],
          tags: props.tags,
          category: props.category,
@@ -81,7 +81,7 @@ const UpdatedEvent = ({ props }: TProps) => {
          status: props.status,
          tickets: '',
          location: loc,
-         guests: props.guests,
+         guests: [],
          startDate: new Date(),
          endDate: new Date(),
       },
@@ -518,7 +518,7 @@ const UpdatedEvent = ({ props }: TProps) => {
                         <Button
                            type="button"
                            className='bg-green-500 transition-colors hover:bg-green-600 w-full mt-7'
-                           onClick={() => appendGuest({ name: '', avatar: '' })}
+                           onClick={() => appendGuest({ name: '', avatar: [] })}
                         >
                            <Plus />
                         </Button>

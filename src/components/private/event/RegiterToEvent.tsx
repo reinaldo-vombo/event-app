@@ -56,6 +56,7 @@ const RegiterToEvent = ({ props }: TProps) => {
                               location={props.locationName}
                               price={selectedPrice}
                               title={props.title}
+                              eventId={props.id}
                            />
                         </Modal>
                      ) : (

@@ -9,6 +9,9 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { Form } from "@/components/ui/form"
+import { byEventTicke } from "@/lib/actions/sales"
+import { initialState } from "@/constant/static-content"
+import { toast } from "sonner"
 
 interface UserDetailsProps {
    userDetails: {
@@ -22,21 +25,30 @@ interface UserDetailsProps {
    onChange: (details: any) => void
    onBack: () => void
    onComplete: () => void
+   ticketInfo: any
 }
 
-export function UserDetails({ userDetails, onChange, onBack }: UserDetailsProps) {
+export function UserDetails({ userDetails, onChange, onBack, ticketInfo }: UserDetailsProps) {
    const form = useForm<z.infer<typeof paymentSchema>>({
       resolver: zodResolver(paymentSchema),
       defaultValues: {
-         eventId: '',
+         eventId: ticketInfo.eventId,
+         amount: ticketInfo.price,
 
       },
    })
 
    async function onSubmit(values: z.infer<typeof paymentSchema>) {
       console.log(values);
-
       try {
+         const results = await byEventTicke(initialState, values);
+         if (results?.error) {
+            toast.error(results.message)
+            console.log(results.message);
+         }
+         if (results?.success) {
+            toast.success(results.message)
+         }
 
       } catch (error) {
          console.log(error);

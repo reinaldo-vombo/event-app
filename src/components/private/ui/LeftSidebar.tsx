@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { LogoIcon } from '@/assets/logo'
+import { PRIVE_ROUTES } from '@/constant/static-content'
 
 interface NavItemProps {
    icon: React.ReactNode
@@ -42,7 +43,7 @@ export function LeftSidebar() {
          <LogoIcon className="h-8 w-8" />
          <nav className="mt-8 flex flex-1 flex-col items-center gap-4">
             <NavItem href='/' icon={<HomeIcon className="h-6 w-6" />} isActive />
-            <NavItem href='/dashboard/create-event' icon={<Hash className="h-6 w-6" />} />
+            <NavItem href={PRIVE_ROUTES.create_event} icon={<Hash className="h-6 w-6" />} />
             <NavItem href='/' icon={<MessageCircle className="h-6 w-6" />} />
             <NavItem href='/' icon={<Mail className="h-6 w-6" />} />
             <NavItem href='/' icon={<Bookmark className="h-6 w-6" />} />

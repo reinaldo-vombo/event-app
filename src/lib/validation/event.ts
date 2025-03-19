@@ -78,33 +78,22 @@ export const updateEventSchema = z
       .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
         message: 'Slug must be lowercase letters, numbers, and hyphens only.',
       }),
-    thumbnail: z.union([
-      z.string(), // For existing image URL
-      z
-        .array(z.instanceof(File))
-        .nonempty({ message: 'Deve carregar uma imagem' }),
-    ]),
-    gallery: z.union([
-      z.array(z.string()), // For existing image URL
-      z.array(z.instanceof(File)).optional(),
-    ]),
+    thumbnail: z.array(z.instanceof(File)).nonempty({
+      message: 'Deve carregar uma imagem',
+    }),
+    gallery:z.array(z.instanceof(File)).optional(),
     category: z.string().nonempty({
       message: 'Deve adicionar uma categoria',
     }),
     tags: z.array(z.string()).optional(),
     guests: z
-      .array(
-        z.object({
-          name: z.string(),
-          avatar: z.union([
-            z.string(), // For existing image URL
-            z
-              .array(z.instanceof(File))
-              .nonempty({ message: 'Deve carregar uma imagem' }),
-          ]),
-        })
-      )
-      .optional(),
+    .array(
+      z.object({
+        name: z.string(),
+        avatar: z.array(z.instanceof(File)),
+      })
+    )
+    .optional(),
     price: z.array(
       z.object({
         title: z.string().min(3, {
