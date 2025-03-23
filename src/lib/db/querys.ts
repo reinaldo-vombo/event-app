@@ -43,7 +43,7 @@ export const getEventById = async (id: string) => {
   });
 
   if (!event) {
-    throw new Error('Product not found');
+    throw new Error('Event not found');
   }
 
   return {
@@ -86,4 +86,62 @@ export const getEventsGuestById = async (id: string | undefined) => {
   });
 
   return guests;
+};
+export const getUserById = async (id: string | undefined) => {
+  const creator = await prisma.user.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  return creator;
+};
+export const getUsersByEventId = async (eventId: string | undefined) => {
+  const users = await prisma.user.findMany({
+    where: {
+      sales: {
+        some: {
+          eventId,
+        },
+      },
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+    },
+  });
+
+  return users;
+};
+export const isFollowing = async (followerId: string, followingId: string) => {
+  const existingFollow = await prisma.follower.findUnique({
+    where: {
+      followerId_followingId: { followerId, followingId },
+    },
+  });
+
+  return !!existingFollow;
+};
+//This function gets the list of users who follow a specific user.
+export const getFollowers = async (userId: string) => {
+  return await prisma.follower.findMany({
+    where: { followingId: userId },
+    include: {
+      follower: {
+        select: { id: true, name: true, email: true }, // Select needed fields
+      },
+    },
+  });
+};
+//This function gets the list of users that a specific user is following.
+export const getFollowing = async (userId: string) => {
+  return await prisma.follower.findMany({
+    where: { followerId: userId },
+    include: {
+      following: {
+        select: { id: true, name: true, email: true },
+      },
+    },
+  });
 };

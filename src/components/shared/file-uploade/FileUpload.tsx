@@ -5,6 +5,7 @@ import { FileRejection, useDropzone } from "react-dropzone";
 import { Upload, X } from "lucide-react";
 import Image from "next/image";
 import { GridPattern } from "./GridPattern";
+import { TFileUploadProps } from "../type";
 
 const mainVariant = {
    initial: {
@@ -26,15 +27,7 @@ const secondaryVariant = {
       opacity: 1,
    },
 };
-type TFileUploadProps = {
-   formField: {
-      value: File[] | undefined | string | string[];
-      onChange: (files: File[]) => void;
-   };
-   maxFiles?: number;
-   multiple?: boolean;
-   showGrid?: boolean
-}
+
 
 export const FileUpload = ({ formField, maxFiles = 1, multiple = false, showGrid = true }: TFileUploadProps) => {
    const fileInputRef = useRef<HTMLInputElement>(null);

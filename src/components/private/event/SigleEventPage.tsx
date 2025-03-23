@@ -1,7 +1,6 @@
 'use client'
 import Image from 'next/image'
 import UsersGoing from './UsersGoing'
-import SnapShots from '@/components/shared/Gallery'
 import GuesViewer from '../ui/GuestCard'
 import RegiterToEvent from './RegiterToEvent'
 import SharedToSocialMedia from './SharedToSocialMedia'
@@ -84,12 +83,12 @@ const SigleEventPage = ({ props, guests }: TProps) => {
                </div>
             </div>
          </div>
-         <div className='space-y-6'>
+         {/* <div className='space-y-6'>
             <h4 className='font-semibold text-3xl'>Galeria</h4>
             <div className='col-span-12'>
                <SnapShots />
             </div>
-         </div>
+         </div> */}
       </section>
    )
 }

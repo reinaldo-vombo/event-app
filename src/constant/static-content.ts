@@ -15,6 +15,13 @@ export const PRIVE_ROUTES = {
   create_event: '/party-twon/create-event',
   share: `${process.env.NEXT_PUBLIC_URL}/events/`,
 };
+export const ROOT_ROUTES = {
+  root: '/',
+  login: '/auth/login',
+  register: '/auth/register',
+  forgot: '/auth/forgot-password',
+  reset: '/auth/reset-password',
+};
 
 export const IMAGE_GALLERY = [
   { id: 1, image: demo1 },

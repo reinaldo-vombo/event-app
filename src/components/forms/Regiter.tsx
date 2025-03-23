@@ -15,19 +15,32 @@ import {
    FormMessage,
 } from '@/components/ui/form'
 import { registerSchema } from '@/lib/validation/user'
-import { initialState } from '@/constant/static-content'
+import { initialState, PRIVE_ROUTES, ROOT_ROUTES } from '@/constant/static-content'
 import { Button } from '../ui/button'
 import { registerUser } from '@/lib/actions/users'
+import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
 
 const Register = () => {
+   const router = useRouter()
    async function onSubmit(value: z.infer<typeof registerSchema>) {
+      const email = value.email;
+      const password = value.password;
       const result = await registerUser(initialState, value);
       if (result.error) {
          toast.error(result.message)
       }
       if (result.success) {
          toast.success(result.message)
+         await signIn("credentials", {
+            redirect: false,
+            email,
+            password,
+            callbackUrl: '/party-twon'
+         })
+         router.push(PRIVE_ROUTES.root);
       }
       // Handle form submission
    }
@@ -44,7 +57,7 @@ const Register = () => {
    })
 
    return (
-      <div className='space-y-8'>
+      <div className='space-y-8 w-full max-w-md'>
          <Form {...form}>
             <form className='space-y-5' onSubmit={form.handleSubmit(onSubmit)}>
                <FormField
@@ -132,8 +145,8 @@ const Register = () => {
          </Form>
          <Separator />
          <div className='flex items-center justify-center gap-2 text-xs'>
-            <span>Já tenho uma conta</span>
-            <span className='text-alpha cursor-pointer'>Entrar</span>
+            <span>Já tenho uma conta?</span>
+            <Link href={ROOT_ROUTES.login} className='text-alpha cursor-pointer'>Entrar</Link>
          </div>
       </div>
    )

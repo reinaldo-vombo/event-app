@@ -1,20 +1,22 @@
-import {
-   Sheet,
-   SheetContent,
-   SheetDescription,
-   SheetHeader,
-   SheetTitle,
-   SheetTrigger,
-} from "@/components/ui/sheet"
-<Sheet>
-   <SheetTrigger>Open</SheetTrigger>
-   <SheetContent>
-      <SheetHeader>
-         <SheetTitle>Are you absolutely sure?</SheetTitle>
-         <SheetDescription>
-            This action cannot be undone. This will permanently delete your account
-            and remove your data from our servers.
+
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "../ui/sheet"
+import { SheetProps } from "./type"
+
+const SheetModal = ({ children, side, onClick, trigger, label, className, triggerClass, title, description }: SheetProps) => {
+   return (
+      <Sheet>
+         <SheetTrigger aria-label={label} className={triggerClass} onClick={onClick && onClick}>
+            {trigger}
+         </SheetTrigger>
+         <SheetDescription className="sr-only">
+            {description}
          </SheetDescription>
-      </SheetHeader>
-   </SheetContent>
-</Sheet>
+         <SheetContent aria-describedby="deplay item" side={side} className={className}>
+            <SheetTitle className="font-semibold text-center">{title ? title : 'Modal dialog'}</SheetTitle>
+            {children}
+         </SheetContent>
+      </Sheet>
+   )
+}
+
+export default SheetModal;

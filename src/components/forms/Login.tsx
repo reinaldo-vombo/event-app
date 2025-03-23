@@ -16,6 +16,7 @@ import { GoogleLogo } from "@/assets/logo"
 import { useRouter } from 'next/navigation'
 import { toast } from "sonner"
 import { loginSchema } from "@/lib/validation/user"
+import Link from "next/link"
 
 export default function LoginForm() {
    const router = useRouter()
@@ -50,7 +51,7 @@ export default function LoginForm() {
          }
          if (result?.ok) {
             router.push("/party-twon");
-            toast.success(`Bem-vindo ao portal`);
+            toast.success(`Let's party`);
             setIsLoading(false)
          }
       } catch (error) {
@@ -60,7 +61,7 @@ export default function LoginForm() {
    }
 
    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
          <Card className="w-full max-w-md">
             <CardHeader className="space-y-1">
                <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
@@ -108,7 +109,7 @@ export default function LoginForm() {
                            <FormItem>
                               <FormLabel>Palavra-passe</FormLabel>
                               <FormControl>
-                                 <Input placeholder="Palavra-passe"  {...field} />
+                                 <Input placeholder="Palavra-passe" type="password"  {...field} />
                               </FormControl>
                               <FormMessage />
                            </FormItem>
@@ -144,9 +145,9 @@ export default function LoginForm() {
             </CardContent>
             <CardFooter className="flex flex-wrap items-center justify-center gap-1">
                <span className="text-muted-foreground text-sm">Don&apos;t have an account?</span>
-               <Button variant="link" className="p-0 font-normal">
-                  Sign up
-               </Button>
+               <Link href={'/auth/registar'} className="p-0 font-normal">
+                  Criar conta
+               </Link>
             </CardFooter>
          </Card>
       </div>

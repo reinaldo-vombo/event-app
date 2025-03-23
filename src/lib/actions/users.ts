@@ -11,6 +11,7 @@ import { writeFile, mkdir, access, constants } from 'fs/promises';
 import { join } from 'path';
 import { PATH } from '@/constant/static-content';
 import { revalidatePath } from 'next/cache';
+import bcrypt from 'bcrypt';
 
 type FormData = z.infer<typeof registerSchema>;
 type UpdateFormData = z.infer<typeof updatedUserSchema>;
@@ -26,12 +27,13 @@ export async function registerUser(prevState: TState, data: FormData) {
       message: 'As palavra-passe não condizem',
     };
   }
+  const hashedPassword = await bcrypt.hash(password, 10);
 
   try {
     await prisma.user.create({
       data: {
         name,
-        password,
+        password: hashedPassword,
         email,
         username: userName,
       },
@@ -49,7 +51,7 @@ export async function registerUser(prevState: TState, data: FormData) {
     return {
       error: true,
       status: 500,
-      message: 'Ocorreu um por-favor tente de novo',
+      message: 'Ocorreu um erro por-favor tente de novo',
     };
   }
 }
