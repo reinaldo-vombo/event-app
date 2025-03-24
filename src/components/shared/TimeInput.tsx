@@ -11,9 +11,15 @@ interface TimePickerDemoProps {
 }
 
 const TimePicker = ({ date, setDate }: TimePickerDemoProps) => {
+   const handleTimeChange = (value: any, picker: "hours" | "minutes") => {
+      if (!date) return;
+      const newDate = new Date(date);
+      if (picker === "hours") newDate.setHours(value);
+      if (picker === "minutes") newDate.setMinutes(value);
+      setDate(newDate);
+   };
    const minuteRef = React.useRef<HTMLInputElement>(null);
    const hourRef = React.useRef<HTMLInputElement>(null);
-   const secondRef = React.useRef<HTMLInputElement>(null);
 
    return (
       <div className="flex items-end gap-2">
@@ -24,7 +30,7 @@ const TimePicker = ({ date, setDate }: TimePickerDemoProps) => {
             <TimePickerInput
                picker="hours"
                date={date}
-               setDate={setDate}
+               setDate={(value) => handleTimeChange(value, "hours")}
                ref={hourRef}
                onRightFocus={() => minuteRef.current?.focus()}
             />
@@ -36,10 +42,9 @@ const TimePicker = ({ date, setDate }: TimePickerDemoProps) => {
             <TimePickerInput
                picker="minutes"
                date={date}
-               setDate={setDate}
+               setDate={(value) => handleTimeChange(value, "minutes")}
                ref={minuteRef}
                onLeftFocus={() => hourRef.current?.focus()}
-               onRightFocus={() => secondRef.current?.focus()}
             />
          </div>
          <div className="flex h-10 items-center">

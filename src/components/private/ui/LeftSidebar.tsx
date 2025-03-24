@@ -51,11 +51,11 @@ export function LeftSidebar() {
          <div className="mb-7">
             <Modal id={1} trigger={
                <Image
-                  src={user?.avatar || '/avatar.jpg'}
+                  src={user?.image || '/avatar.jpg'}
                   className='rounded-full'
                   width={40}
                   height={40}
-                  alt={user?.avatar || ''} />
+                  alt={user?.image || ''} />
             } >
                <ProfileModal user={user} />
             </Modal>

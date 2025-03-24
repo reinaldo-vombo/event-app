@@ -43,7 +43,7 @@ const UpdatedUserPassword = ({ user }: TProps) => {
          email: user?.email,
          name: user?.name,
          role: user?.role,
-         userName: user?.userName,
+         userName: user?.username || "",
          old_password: "",
          new_password: ""
       }

@@ -35,14 +35,14 @@ const UpdatedUser = ({ user }: TUserProps) => {
       resolver: zodResolver(updatedUserSchema),
       defaultValues: {
          name: user?.name,
-         userName: user?.userName,
+         userName: user?.username,
          role: user?.role || "PARTICIPANT",
          email: user?.email,
          avatar: [],
-         bio: user?.bio,
+         bio: user?.bio || "",
          location: {
-            lat: user?.lat,
-            lng: user?.lng
+            lat: user?.lat || 0,
+            lng: user?.lng || 0
          }
       }
    })
