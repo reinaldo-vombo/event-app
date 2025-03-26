@@ -13,7 +13,6 @@ const SearchContent = ({ events }: TProps) => {
    const filteredEvents = events.filter((p) =>
       p.title.toLowerCase().includes(query.toLowerCase())
    );
-   console.log('search', filteredEvents);
 
    return (
       <div className='space-y-7'>

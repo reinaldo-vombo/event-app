@@ -10,7 +10,7 @@ import { TEvent } from '../event/type'
 type TProps = {
    events: TEvent[]
    creator: any
-   // creator: IUser | null
+   // creator: IUser
 }
 
 const CreatorSection = ({ creator, events }: TProps) => {
@@ -20,7 +20,7 @@ const CreatorSection = ({ creator, events }: TProps) => {
       <section className='padding'>
          <div className="relative h-48 md:h-64 w-full overflow-hidden">
             <Image
-               src="/placeholder.svg?height=400&width=1500"
+               src={creator?.image || '/avatar.jpg'}
                alt="Profile banner"
                width={1500}
                height={400}
@@ -30,9 +30,7 @@ const CreatorSection = ({ creator, events }: TProps) => {
                }}
             />
             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-cyan-500/20 via-purple-500/20 to-pink-500/20" />
-            <Button variant="outline" className="absolute right-4 bottom-4 bg-white/80 backdrop-blur-sm hover:bg-white/90">
-               Edit Profile
-            </Button>
+
          </div>
 
          {/* Profile Info */}
@@ -42,8 +40,8 @@ const CreatorSection = ({ creator, events }: TProps) => {
                <div className="flex-shrink-0">
                   <div className="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 border-white overflow-hidden bg-white">
                      <Image
-                        src={creator?.image || ''}
-                        alt={creator?.username || ''}
+                        src={creator?.image || '/avatar.jpg'}
+                        alt={creator?.username || '/avatar.jpg'}
                         width={160}
                         height={160}
                         className="w-full h-full object-cover"
@@ -63,6 +61,9 @@ const CreatorSection = ({ creator, events }: TProps) => {
                      </div>
                      <div className="flex gap-2">
                         <Button className="bg-blue-500 hover:bg-blue-600">Follow</Button>
+                        <Button variant="outline" className="absolute right-4 bottom-4 bg-white/80 backdrop-blur-sm hover:bg-white/90">
+                           Edit Profile
+                        </Button>
                         <Button variant="outline" size="icon">
                            <Share2 className="h-4 w-4" />
                         </Button>

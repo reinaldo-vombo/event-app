@@ -1,11 +1,12 @@
 'use client'
 import { Separator } from '@/components/ui/separator'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Eye, Mail, User } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import {
    Form,
    FormControl,
@@ -15,15 +16,17 @@ import {
    FormMessage,
 } from '@/components/ui/form'
 import { registerSchema } from '@/lib/validation/user'
-import { initialState, PRIVE_ROUTES, ROOT_ROUTES } from '@/constant/static-content'
+import { initialState, PRIVE_ROUTES } from '@/constant/static-content'
 import { Button } from '../ui/button'
 import { registerUser } from '@/lib/actions/users'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { generateUsername } from '@/lib/helper'
 
-
-const Register = () => {
+type TPost = {
+   onChange: React.Dispatch<React.SetStateAction<boolean>>
+}
+const Register = ({ onChange }: TPost) => {
    const router = useRouter()
    async function onSubmit(value: z.infer<typeof registerSchema>) {
       const email = value.email;
@@ -57,98 +60,102 @@ const Register = () => {
    })
 
    return (
-      <div className='space-y-8 w-full max-w-md'>
-         <Form {...form}>
-            <form className='space-y-5' onSubmit={form.handleSubmit(onSubmit)}>
-               <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                     <FormItem className='w-full'>
-                        <FormLabel className='text-slate-500'>Nome</FormLabel>
-                        <FormControl>
-                           <div className='relative'>
-                              <Input placeholder='Nome' {...field} />
-                              <User className='absolute right-[22px] top-[9px] text-slate-300' width={20} />
-                           </div>
-                        </FormControl>
-                        <FormMessage />
-                     </FormItem>
-                  )}
-               />
-               <FormField
-                  control={form.control}
-                  name="userName"
-                  render={({ field }) => (
-                     <FormItem className='w-full'>
-                        <FormLabel className='text-slate-500'>Nome de utilizador</FormLabel>
-                        <FormControl>
-                           <div className='relative'>
-                              <Input placeholder='Nome' {...field} />
-                              <User className='absolute right-[22px] top-[9px] text-slate-300' width={20} />
-                           </div>
-                        </FormControl>
-                        <FormMessage />
-                     </FormItem>
-                  )}
-               />
-               <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                     <FormItem className='w-full'>
-                        <FormLabel className='text-slate-500'>Email</FormLabel>
-                        <FormControl>
-                           <div className='relative'>
+      <Card className="w-full ">
+         <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl text-center font-bold">Cadastro</CardTitle>
+            <CardDescription></CardDescription>
+         </CardHeader>
+         <CardContent className="space-y-4">
+            <Form {...form}>
+               <form className='space-y-5' onSubmit={form.handleSubmit(onSubmit)}>
+                  <FormField
+                     control={form.control}
+                     name="name"
+                     render={({ field }) => (
+                        <FormItem className='w-full'>
+                           <FormLabel className='text-slate-500'>Nome</FormLabel>
+                           <FormControl>
+                              <Input
+                                 placeholder='Nome' {...field}
+                                 onChange={(e) => {
+                                    field.onChange(e); // Update the title field
+                                    form.setValue("userName", generateUsername(e.target.value)); // Generate slug dynamically
+                                 }} />
+                           </FormControl>
+                           <FormMessage />
+                        </FormItem>
+                     )}
+                  />
+                  <FormField
+                     control={form.control}
+                     name="userName"
+                     render={({ field }) => (
+                        <FormItem className='w-full'>
+                           <FormLabel className='text-slate-500'></FormLabel>
+                           <FormControl>
+                              <div className='relative'>
+                                 <Input placeholder='Nome' type='hidden' {...field} />
+                              </div>
+                           </FormControl>
+                           <FormMessage />
+                        </FormItem>
+                     )}
+                  />
+                  <FormField
+                     control={form.control}
+                     name="email"
+                     render={({ field }) => (
+                        <FormItem className='w-full'>
+                           <FormLabel className='text-slate-500'>Email</FormLabel>
+                           <FormControl>
                               <Input placeholder='Email' {...field} />
-                              <Mail className='absolute right-[22px] top-[9px] text-slate-300' width={20} />
-                           </div>
-                        </FormControl>
-                        <FormMessage />
-                     </FormItem>
-                  )}
-               />
-               <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                     <FormItem className='w-full'>
-                        <FormLabel className='text-slate-500'>Palavra-passe</FormLabel>
-                        <FormControl>
-                           <div className='relative'>
+                           </FormControl>
+                           <FormMessage />
+                        </FormItem>
+                     )}
+                  />
+                  <FormField
+                     control={form.control}
+                     name="password"
+                     render={({ field }) => (
+                        <FormItem className='w-full'>
+                           <FormLabel className='text-slate-500'>Palavra-passe</FormLabel>
+                           <FormControl>
                               <Input type='password' placeholder='Palavra-passe' {...field} />
-                              <Eye className='absolute right-[22px] top-[9px] text-slate-300' width={20} />
-                           </div>
-                        </FormControl>
-                        <FormMessage />
-                     </FormItem>
-                  )}
-               />
-               <FormField
-                  control={form.control}
-                  name="confirmPassword"
-                  render={({ field }) => (
-                     <FormItem className='w-full'>
-                        <FormLabel className='text-slate-500'>Confirmar Palavra-passe</FormLabel>
-                        <FormControl>
-                           <div className='relative'>
+                           </FormControl>
+                           <FormMessage />
+                        </FormItem>
+                     )}
+                  />
+                  <FormField
+                     control={form.control}
+                     name="confirmPassword"
+                     render={({ field }) => (
+                        <FormItem className='w-full'>
+                           <FormLabel className='text-slate-500'>Confirmar Palavra-passe</FormLabel>
+                           <FormControl>
                               <Input type='password' placeholder='Confirmar' {...field} />
-                              <Eye className='absolute right-[22px] top-[9px] text-slate-300' width={20} />
-                           </div>
-                        </FormControl>
-                        <FormMessage />
-                     </FormItem>
-                  )}
-               />
-               <Button disabled={form.formState.isSubmitting}>Criar</Button>
-            </form>
-         </Form>
-         <Separator />
-         <div className='flex items-center justify-center gap-2 text-xs'>
-            <span>Já tenho uma conta?</span>
-            <Link href={ROOT_ROUTES.login} className='text-alpha cursor-pointer'>Entrar</Link>
-         </div>
-      </div>
+                           </FormControl>
+                           <FormMessage />
+                        </FormItem>
+                     )}
+                  />
+                  <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+                     {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                     Entrar
+                  </Button>
+               </form>
+            </Form>
+         </CardContent>
+         <CardFooter className="flex flex-wrap items-center justify-center gap-1">
+            <Separator />
+            <div className='flex items-center justify-center gap-2 text-xs'>
+               <span>Já tenho uma conta?</span>
+               <button onClick={() => onChange(false)} className='text-alpha cursor-pointer'>Entrar</button>
+            </div>
+         </CardFooter>
+      </Card>
+
    )
 }
 

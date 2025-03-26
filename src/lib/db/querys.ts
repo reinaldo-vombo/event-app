@@ -1,7 +1,17 @@
 import { prisma } from './client';
 
 export const getAllEvents = async () => {
-  const events = await prisma.event.findMany({});
+  const events = await prisma.event.findMany({
+    include: {
+      organizer: {
+        select: {
+          id: true,
+          name: true,
+          image: true, // Assuming `avatar` exists in User model
+        },
+      },
+    },
+  });
   return events.map((event) => ({
     ...event,
     price:

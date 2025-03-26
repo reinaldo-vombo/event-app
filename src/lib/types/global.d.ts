@@ -17,18 +17,18 @@ declare module 'next-auth' {
     role: string;
     follower: string | null;
     // Social Relationships
-    followers: {
-      id: string;
-      name: string;
-      username: string;
-      image: string | null;
-    }[];
-    following: {
-      id: string;
-      name: string;
-      username: string;
-      image: string | null;
-    }[];
+    // followers: {
+    //   id: string;
+    //   name: string;
+    //   username: string;
+    //   image: string | null;
+    // }[];
+    // following: {
+    //   id: string;
+    //   name: string;
+    //   username: string;
+    //   image: string | null;
+    // }[];
 
     bio: string | null;
     lat: number | null;

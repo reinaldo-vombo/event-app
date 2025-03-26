@@ -76,3 +76,10 @@ body {
 .leaflet-container {
   height: 100%;
 }
+.hover-card{
+  clip-path: circle(0% at 0% 100%);
+  transition:  1s;
+}
+.hover-card-container .hover-card{
+  clip-path: circle(150% at 0% 100%);
+}

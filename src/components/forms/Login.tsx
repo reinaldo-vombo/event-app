@@ -1,6 +1,6 @@
 "use client"
 
-import * as React from "react"
+import React, { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -16,9 +16,10 @@ import { GoogleLogo } from "@/assets/logo"
 import { useRouter } from 'next/navigation'
 import { toast } from "sonner"
 import { loginSchema } from "@/lib/validation/user"
-import Link from "next/link"
+import Register from "./Regiter"
 
 export default function LoginForm() {
+   const [showRegister, setShowRegister] = useState(false)
    const router = useRouter()
    const [isLoading, setIsLoading] = React.useState<boolean>(false)
 
@@ -61,10 +62,10 @@ export default function LoginForm() {
    }
 
    return (
-      <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-         <Card className="w-full max-w-md">
+      <div className={`relative ${showRegister ? "hover-card-container" : ""}`}>
+         <Card className="w-full ">
             <CardHeader className="space-y-1">
-               <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
+               <CardTitle className="text-2xl font-bold">Bem-vindo de volta</CardTitle>
                <CardDescription>Enter your email and password to login to your account</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -138,18 +139,21 @@ export default function LoginForm() {
 
                      <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
                         {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Sign in
+                        Entrar
                      </Button>
                   </form>
                </Form>
             </CardContent>
             <CardFooter className="flex flex-wrap items-center justify-center gap-1">
                <span className="text-muted-foreground text-sm">Don&apos;t have an account?</span>
-               <Link href={'/auth/registar'} className="p-0 font-normal">
+               <button type="button" className="p-0 font-normal" onClick={() => setShowRegister(true)}>
                   Criar conta
-               </Link>
+               </button>
             </CardFooter>
          </Card>
+         <div className="absolute hover-card bg-black inset-0 transition-all ease-out delay-150">
+            <Register onChange={setShowRegister} />
+         </div>
       </div>
    )
 }

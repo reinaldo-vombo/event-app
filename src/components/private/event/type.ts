@@ -22,6 +22,11 @@ export type TEvent = {
   longitude: number;
   locationName: string;
   organizerId?: string;
+  organizer?: {
+    id: string;
+    name: string;
+    image: string | null;
+  },
   guests?: {
     name: string;
     avatar: string;
