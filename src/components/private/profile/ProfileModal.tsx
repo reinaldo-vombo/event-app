@@ -5,6 +5,7 @@ import FormTabs from './UserTabs';
 import { TUserProps } from '@/lib/types';
 
 const ProfileModal = ({ user }: TUserProps) => {
+
    return (
       <div>
          <div className='flex items-center gap-4 mb-6'>

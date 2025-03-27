@@ -106,12 +106,10 @@ const UpdatedEvent = ({ props }: TProps) => {
       const results = await updateEvent(initialState, values, props.id)
       if (results?.error) {
          toast.error(results?.message)
-         console.log(results.message);
       }
       if (results?.sucess) {
          toast.success(results.message)
       }
-      console.log(values)
       // Here you would typically send the form data to your backend
    }
    const onInvalid = (errors: unknown) => {

@@ -1,5 +1,4 @@
 import React from 'react'
-import { Button } from '../ui/button'
 import Image from 'next/image'
 import { Edit, Eye, Heart, Trash } from 'lucide-react'
 import { TEvent } from '../private/event/type'
@@ -12,9 +11,19 @@ type TProps = {
 }
 const EventCard = ({ props, ownerId }: TProps) => {
    const { title, thumbnail, price, organizerId } = props
+   console.log(organizerId === ownerId);
+
+
+   const coverteCurrency = (price: string) => {
+      const convertedPrice = parseInt(price)
+      if (typeof window === 'undefined') return convertedPrice
+      const currency = Intl.NumberFormat('AOA', { style: 'currency', currency: 'AOA' }).format(convertedPrice)
+      return currency
+   }
    return (
-      <div className="rounded-xl overflow-hidden border border-gray-200 bg-white hover:shadow-md transition-shadow">
+      <div className="rounded-xl overflow-hidden border border-neutral-800 hover:shadow-md transition-shadow">
          <div className="relative aspect-square">
+
             <Image
                src={thumbnail}
                alt={title}
@@ -31,35 +40,11 @@ const EventCard = ({ props, ownerId }: TProps) => {
          <div className="p-4">
             <h3 className="font-medium">{title}</h3>
             <div className="flex justify-between items-center mt-2">
-               <div>
+               <div className='flex gap-2 items-center'>
                   <div className="text-sm text-gray-500">Preço</div>
-                  <div className="flex items-center gap-1">
-                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                           d="M12 2L19.5 14H4.5L12 2Z"
-                           stroke="currentColor"
-                           strokeWidth="2"
-                           strokeLinecap="round"
-                           strokeLinejoin="round"
-                        />
-                        <path
-                           d="M12 22L4.5 10H19.5L12 22Z"
-                           stroke="currentColor"
-                           strokeWidth="2"
-                           strokeLinecap="round"
-                           strokeLinejoin="round"
-                        />
-                     </svg>
-                     <span className="font-medium">{price[0].price}</span>
-                     <span className="text-xs text-gray-500"></span>
-                  </div>
+                  <span className="font-medium">{coverteCurrency(price[0].price)}</span>
                </div>
-               <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-xs">
-                  Buy now
-               </Button>
-            </div>
-            <div className='flex justify-between'>
-               {organizerId && organizerId === ownerId ? (
+               {organizerId !== ownerId ? (
                   <div>
                      <SheetModal
                         side='right'
@@ -69,15 +54,18 @@ const EventCard = ({ props, ownerId }: TProps) => {
                         label='Event Details'>detais</SheetModal>
                      <SheetModal
                         side='right'
-                        trigger={<Edit />}
+                        trigger={<Edit className='text-green-500' />}
                         title={props.title}
                         description='View event details'
                         label='Event Details'>detais</SheetModal>
-                     <Modal title='Eliminar evento' trigger={<Trash />}>
+                     <Modal trigger={<Trash className='text-red-500' />}>
                         delete
                      </Modal>
                   </div>
                ) : null}
+            </div>
+            <div className='flex justify-between'>
+
                <div className="flex items-center mt-3 -space-x-2">
                   <div className="w-6 h-6 rounded-full border-2 border-white overflow-hidden bg-gray-200">
                      <Image src="/placeholder.svg?height=24&width=24" alt="User" width={24} height={24} />

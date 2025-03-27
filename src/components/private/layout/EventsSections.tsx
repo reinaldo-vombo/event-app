@@ -7,7 +7,6 @@ import { PRIVE_ROUTES } from '@/constant/static-content'
 import UserAvatar from '@/components/shared/UserAvatar'
 
 const EventsSections = ({ props }: TEventProps) => {
-   console.log(props);
 
    return (
       <div className='columns-7 max-w-7xl mx-auto space-y-4'>

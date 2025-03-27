@@ -33,7 +33,6 @@ type Card = {
 
 const LinearCards = () => {
    const [selectedCard, setSelectedCard] = useState<Card | null>(null);
-   console.log(selectedCard);
 
    const [isHorizontal, setIsHorizontal] = useState(true);
 

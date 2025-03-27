@@ -1,16 +1,14 @@
 'use client'
-import { Hash, MessageCircle, Mail, Bookmark, HomeIcon, LogOut } from 'lucide-react'
+import { MessageCircle, Mail, Bookmark, HomeIcon, LogOut, Plus } from 'lucide-react'
 import { cn } from "@/lib/utils"
 import Link from 'next/link'
-import Modal from '@/components/shared/animate-modal/Modal'
-import Image from 'next/image'
-import ProfileModal from '../profile/ProfileModal'
-import { User } from '@/lib/auth/user'
 import { Button } from '@/components/ui/button'
 import { signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { LogoIcon } from '@/assets/logo'
 import { PRIVE_ROUTES } from '@/constant/static-content'
+import Tooltipy from '@/components/shared/Tooltipy'
+
 
 interface NavItemProps {
    icon: React.ReactNode
@@ -32,33 +30,26 @@ function NavItem({ icon, isActive, href }: NavItemProps) {
 }
 
 export function LeftSidebar() {
-   const user = User()
    const router = useRouter()
+
    const loggout = () => {
       signOut()
       router.push('/')
    }
    return (
       <div className="flex fixed left-0 z-10 h-screen w-20 flex-col items-center border-r px-2 py-4">
-         <LogoIcon className="h-8 w-8" />
-         <nav className="mt-8 flex flex-1 flex-col items-center gap-4">
+         <Link href={PRIVE_ROUTES.root} className="flex items-center gap-2">
+            <LogoIcon className="size-40" />
+         </Link>
+         <nav className="mt-6 flex flex-1 flex-col items-center gap-4">
             <NavItem href='/' icon={<HomeIcon className="h-6 w-6" />} isActive />
-            <NavItem href={PRIVE_ROUTES.create_event} icon={<Hash className="h-6 w-6" />} />
+            <Tooltipy title='Criar Evento' trigger={<NavItem href={PRIVE_ROUTES.create_event} icon={<Plus className="h-6 w-6" />} />} />
+
             <NavItem href='/' icon={<MessageCircle className="h-6 w-6" />} />
             <NavItem href='/' icon={<Mail className="h-6 w-6" />} />
             <NavItem href='/' icon={<Bookmark className="h-6 w-6" />} />
          </nav>
          <div className="mb-7">
-            <Modal id={1} trigger={
-               <Image
-                  src={user?.image || '/avatar.jpg'}
-                  className='rounded-full'
-                  width={40}
-                  height={40}
-                  alt={user?.image || ''} />
-            } >
-               <ProfileModal user={user} />
-            </Modal>
             <Button className='bg-transparent p-1' onClick={() => loggout()}>
                <LogOut className='text-red-500' />
             </Button>

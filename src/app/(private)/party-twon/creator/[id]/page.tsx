@@ -29,9 +29,10 @@ export async function generateMetadata(
 }
 export default async function CreatorPage({ params }: TSearchParams) {
    const id = (await params).id;
-   const [events, creator] = await Promise.all([
+   const [events, creator,] = await Promise.all([
       getEventsByOrganizer(id),
-      getUserById(id)
+      getUserById(id),
    ]);
+
    return <CreatorSection events={events} creator={creator} />
 }

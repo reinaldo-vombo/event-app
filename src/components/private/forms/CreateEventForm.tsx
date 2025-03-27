@@ -94,12 +94,10 @@ const CreateEventForm = () => {
       const results = await createEvent(initialState, values)
       if (results?.error) {
          toast.error(results.message)
-         console.log(results.message);
       }
       if (results?.success) {
          toast.success(results.message)
       }
-      console.log(values)
       // Here you would typically send the form data to your backend
    }
    const onInvalid = (errors: unknown) => {

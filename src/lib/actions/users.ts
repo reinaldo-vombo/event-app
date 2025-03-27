@@ -56,7 +56,7 @@ export async function registerUser(prevState: TState, data: FormData) {
   }
 }
 export async function updateUser(prevState: TState, data: UpdateFormData) {
-  const { name, email, userName, avatar } = data;
+  const { name, email, avatar } = data;
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -82,7 +82,6 @@ export async function updateUser(prevState: TState, data: UpdateFormData) {
         password: session.user.password,
         email,
         image: fileUrl,
-        username: userName,
       },
     });
     revalidatePath('/');
@@ -90,6 +89,11 @@ export async function updateUser(prevState: TState, data: UpdateFormData) {
       success: true,
       status: 200,
       message: 'A sua conta foi atualizada',
+      fields: {
+        name,
+        email,
+        image: fileUrl,
+      }
     };
   } catch (error) {
     if (error instanceof Error) {
@@ -104,7 +108,7 @@ export async function updateUser(prevState: TState, data: UpdateFormData) {
   }
 }
 export async function updatePassword(prevState: TState, data: UpdateFormData) {
-  const { name, email, userName, new_password, old_password } = data;
+  const { name, email, new_password, old_password } = data;
   const session = await getServerSession(authOptions);
 
   if (!session) {
@@ -139,7 +143,6 @@ export async function updatePassword(prevState: TState, data: UpdateFormData) {
         name,
         password: hashedPassword,
         email,
-        username: userName,
       },
     });
     return {

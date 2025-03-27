@@ -10,7 +10,7 @@ const page = async () => {
    return (
       <section>
          <div className="container space-y-4 mx-auto">
-            <div className='flex items-center justify-between mx-16'>
+            <div className='flex items-center justify-between mx-16 mt-4'>
                <h2 className='font-semibold text-3xl'>O que está acontecendo</h2>
                <div className=''>
                   <SheetModal
@@ -23,7 +23,10 @@ const page = async () => {
                   </SheetModal>
                </div>
             </div>
-            <EventsSections props={data} />
+            <div className='mx-16 mt-4'>
+               <EventsSections props={data} />
+
+            </div>
          </div>
       </section>
    )

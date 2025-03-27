@@ -39,20 +39,17 @@ export function UserDetails({ userDetails, onChange, onBack, ticketInfo }: UserD
    })
 
    async function onSubmit(values: z.infer<typeof paymentSchema>) {
-      console.log(values);
       try {
          const results = await byEventTicke(initialState, values);
          if (results?.error) {
             toast.error(results.message)
-            console.log(results.message);
          }
          if (results?.success) {
             toast.success(results.message)
          }
 
       } catch (error) {
-         console.log(error);
-
+         console.error(error);
       }
    }
 

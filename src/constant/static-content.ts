@@ -13,6 +13,7 @@ export const PATH = '/api/uploads/';
 export const PRIVE_ROUTES = {
   root: '/party-twon',
   create_event: '/party-twon/create-event',
+  event: '/party-twon/events/',
   creator: '/party-twon/creator/',
   share: `${process.env.NEXT_PUBLIC_URL}/events/`,
 };

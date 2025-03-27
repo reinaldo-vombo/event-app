@@ -19,14 +19,25 @@ import { Button } from '@/components/ui/button'
 import { FileUpload } from '@/components/shared/file-uploade/FileUpload'
 import { TUserProps } from '@/lib/types'
 import Selector from '@/components/shared/Selector'
+import { useSession } from 'next-auth/react'
 
 const UpdatedUser = ({ user }: TUserProps) => {
+   const { data: session, update } = useSession();
    async function onSubmit(value: z.infer<typeof updatedUserSchema>) {
       const result = await updateUser(initialState, value);
       if (result.error) {
          toast.error(result.message)
       }
       if (result.success) {
+         await update({
+            ...session,
+            user: {
+               ...session?.user,
+               name: result.fields.name,
+               email: result.fields.email,
+               avatar: result.fields.image
+            },
+         })
          toast.success(result.message)
       }
       // Handle form submission
@@ -35,7 +46,6 @@ const UpdatedUser = ({ user }: TUserProps) => {
       resolver: zodResolver(updatedUserSchema),
       defaultValues: {
          name: user?.name,
-         userName: user?.username,
          role: user?.role || "PARTICIPANT",
          email: user?.email,
          avatar: [],
@@ -83,22 +93,7 @@ const UpdatedUser = ({ user }: TUserProps) => {
                      </FormItem>
                   )}
                />
-               <FormField
-                  control={form.control}
-                  name="userName"
-                  render={({ field }) => (
-                     <FormItem className='w-full'>
-                        <FormLabel className='text-slate-500'>Nome de utilizador</FormLabel>
-                        <FormControl>
-                           <div className='relative'>
-                              <Input placeholder='Nome' {...field} />
-                              <User className='absolute right-[22px] top-[9px] text-slate-300' width={20} />
-                           </div>
-                        </FormControl>
-                        <FormMessage />
-                     </FormItem>
-                  )}
-               />
+
                <FormField
                   control={form.control}
                   name="email"

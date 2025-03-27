@@ -26,7 +26,7 @@ export type SheetProps = {
 export type TModalProps = {
   trigger: ReactNode;
   children: ReactNode;
-  title: string;
+  title?: string;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
 };
